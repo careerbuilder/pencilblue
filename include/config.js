@@ -234,6 +234,14 @@ Configuration.getBaseConfig = function(multisite) {
             use_memory: true,
             use_cache: false,
 
+            // syncSettingsAtStartup will automatically keep all plugins
+            // per site up to date with its details.json counterpart.
+            // Existing plugin settings will not be affected. New
+            // settings will be added, removed settings will be deleted.
+            // NOTE: This can affect your spin up time slightly. This
+            // delay will scale with your number of sites and plugins.
+            syncSettingsAtStartup: false,
+
             //The timeout specifies how long in milliseconds a setting will exist
             //in memory before being flushed.  A value of 0 indicates that the
             //values will not be purged from memory once expired.
@@ -371,6 +379,15 @@ Configuration.getBaseConfig = function(multisite) {
 
         //Contains all of the configuration for localization and internationalization.
         localization: {
+
+            //enables/disables localization service using the database
+            "db":true,
+
+            //enables/disables localization directives being resolved in the nav
+            "nav":false,
+
+            //enables/disables localization directives being resolved in the content pages
+            "pages": false,
 
             //The default locale is the fallback when localization fails for the user's desired language.
             defaultLocale: 'en-US'

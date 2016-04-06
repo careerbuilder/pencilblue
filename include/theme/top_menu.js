@@ -118,17 +118,17 @@ module.exports = function TopMenuServiceModule(pb) {
                     accountButtons = [
                         {
                             icon: 'user',
-                            title: ls.get('ACCOUNT'),
+                            title: ls.g('admin.ACCOUNT'),
                             href: '/user/manage_account'
                         },
                         {
                             icon: 'rss',
-                            title: ls.get('SUBSCRIBE'),
+                            title: ls.g('generic.SUBSCRIBE'),
                             href: '/feed'
                         },
                         {
                             icon: 'power-off',
-                            title: ls.get('LOGOUT'),
+                            title: ls.g('generic.LOGOUT'),
                             href: '/actions/logout'
                         }
                     ];
@@ -139,12 +139,12 @@ module.exports = function TopMenuServiceModule(pb) {
                     [
                         {
                             icon: 'user',
-                            title: ls.get('ACCOUNT'),
+                            title: ls.g('admin.ACCOUNT'),
                             href: '/user/sign_up'
                         },
                         {
                             icon: 'rss',
-                            title: ls.get('SUBSCRIBE'),
+                            title: ls.g('generic.SUBSCRIBE'),
                             href: '/feed'
                         }
                     ];
@@ -155,7 +155,7 @@ module.exports = function TopMenuServiceModule(pb) {
                 [
                     {
                         icon: 'rss',
-                        title: ls.get('SUBSCRIBE'),
+                        title: ls.g('generic.SUBSCRIBE'),
                         href: '/feed'
                     }
                 ];
@@ -177,8 +177,11 @@ module.exports = function TopMenuServiceModule(pb) {
             cb = options;
             options = {};
         }
-        
+
         var ts = new pb.TemplateService(options);
+        if(pb.config.localization.nav){
+            ts.setReprocess(true);
+        }
         ts.load('elements/top_menu/link', function(err, linkTemplate) {
             ts.load('elements/top_menu/dropdown', function(err, dropdownTemplate) {
                 ts.load('elements/top_menu/account_button', function(err, accountButtonTemplate) {
@@ -240,7 +243,7 @@ module.exports = function TopMenuServiceModule(pb) {
             });
         });
     };
-    
+
     /**
      * @method getNavItems
      * @param {Object} options
