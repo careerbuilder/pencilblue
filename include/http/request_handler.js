@@ -225,15 +225,15 @@ module.exports = function RequestHandlerModule(pb) {
      */
     RequestHandler.loadSite = function(site) {
         RequestHandler.sites[site.hostname] = {
-          active: site.active,
-          uid: site.uid,
-          displayName: site.displayName,
-          forceLocale: site.forceLocale,
-          hostname: site.hostname,
-          defaultLocale: site.defaultLocale,
-          supportedLocales: site.supportedLocales,
-          prevHostnames: site.prevHostnames,
-          useBundledScripts: site.useBundledScripts
+            active: site.active,
+            uid: site.uid,
+            displayName: site.displayName,
+            forceLocale: site.forceLocale,
+            hostname: site.hostname,
+            defaultLocale: site.defaultLocale,
+            supportedLocales: site.supportedLocales,
+            prevHostnames: site.prevHostnames,
+            useBundledScripts: site.useBundledScripts
         };
         //Populate RequestHandler.redirectHosts if this site has prevHostnames associated
         if (site.prevHostnames) {
@@ -491,8 +491,6 @@ module.exports = function RequestHandlerModule(pb) {
         //set the controller then lock it down to prevent tampering
         descriptor.controller = Controller;
         routeDescriptor.themes[site][theme][descriptor.method] = Object.freeze(descriptor);
-
-
 
        //only add the descriptor it is new.  We do it here because we need to
        //know that the controller is good.
@@ -1318,9 +1316,9 @@ module.exports = function RequestHandlerModule(pb) {
         //calculate response time
         if (pb.log.isDebug()) {
             pb.log.debug("Response Time: "+(new Date().getTime() - this.startTime)+
-                    "ms URL=["+this.req.method+']'+
-                    this.req.url+(doRedirect ? ' Redirect='+data.redirect : '') +
-                    (typeof data.code === 'undefined' ? '' : ' CODE='+data.code));
+                "ms URL=["+this.req.method+']'+
+                this.req.url+(doRedirect ? ' Redirect='+data.redirect : '') +
+                (typeof data.code === 'undefined' ? '' : ' CODE='+data.code));
         }
 
         //close session after data sent
