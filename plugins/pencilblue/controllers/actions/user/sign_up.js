@@ -21,167 +21,101 @@ var async = require('async');
 
 module.exports = function (pb) {
 
-    //pb dependencies
-    var util = pb.util;
-    var BaseController = pb.BaseController;
-    var FormController = pb.FormController;
-    var UserService = pb.UserService;
+    class SignUpController extends pb.BaseActionController {
+        promisedInit () {
+            this.sqs = new pb.SiteQueryService({site: this.site, onlyThisSite: false});
+            this.contentService = new pb.ContentService({site: this.site});
+            this.userService = new pb.UserService(this.getServiceContext());
+        }
+        async render () {
 
-    /**
-     * Creates an READER level user
-     * @class SignUp
-     * @constructor
-     */
-    function SignUp(){}
-    util.inherits(SignUp, FormController);
+            let payload = this.payload;
 
-    /**
-     * Initializes the controller
-     * @method init
-     * @param {Object} context
-     * @param {Function} cb
-     */
-    SignUp.prototype.init = function(context, cb) {
-        var self = this;
-        var init = function(err) {
+            let message = this.hasRequiredParams(this.payload, this.requiredFields);
+            if (message) {
+                return this._clientError(message);
+            }
+            let contentSettings;
+            try {
+                contentSettings = this.contentService.getSettings();
+            } catch (err) {
+                pb.log.error("ContentService.getSettings encountered an error. ERROR[%s]", err.stack);
+                return this._serverError(err);
+            }
 
-            /**
-             * @property dao
-             * @type {DAO}
-             */
-            self.dao = new pb.SiteQueryService({site: self.site, onlyThisSite: false});
+            let user = this._createDBO(payload, contentSettings);
 
-            /**
-             * @property contentService
-             * @type {ContentService}
-             */
-            self.contentService = new pb.ContentService({site: self.site});
+            try {
+                await Promise.all[this._validateEmail(user), this._validateUserName(user)];
+            } catch (err) {
+                return this._clientError(errMsg);
+            }
 
-            /**
-             * @property service
-             * @type {UserService}
-             */
-            self.service = new UserService(self.getServiceContext());
-
-            cb(err, true);
-        };
-        SignUp.super_.prototype.init.apply(this, [context, init]);
-    };
-
-    SignUp.prototype.render = function(cb) {
-        var self = this;
-        var post = this.body;
-        post.position   = '';
-        post.photo      = null;
-        post.admin      = pb.SecurityService.ACCESS_USER;
-        post.username   = BaseController.sanitize(post.username);
-        post.email      = BaseController.sanitize(post.email);
-        post.first_name = BaseController.sanitize(post.first_name);
-        post.last_name  = BaseController.sanitize(post.last_name);
-        var message = self.hasRequiredParams(post, self.getRequiredFields());
-        if(message) {
-            return cb({
-                code: 400,
-                content: pb.BaseController.apiResponse(pb.BaseController.API_FAILURE, message)
-            });
+            try {
+                this.dao.save(user);
+                if(contentSettings.require_verification) {
+                    await this.service.sendVerificationEmail();
+                }
+                return this._sendSuccess(this.successMsg);
+            } catch (err) {
+                return this._serverError(this.ls.g('generic.ERROR_SAVING'));
+            }
         }
 
-        self.contentService.getSettings(function(err, contentSettings) {
-            if (util.isError(err)){
-                pb.log.error("ContentService.getSettings encountered an error. ERROR[%s]", err.stack);
-                return cb({
-                    code: 500,
-                    content: pb.BaseController.apiResponse(pb.BaseController.API_FAILURE, err)
-                });
+        async _validateUserName(user) {
+            let userNames = await Promise.all([
+                this.sqs.count('user', {username: user.username}),
+                this.sqs.count('unverified_user', {username: user.username})
+            ]);
+            if(_.flatten(userNames).length > 0) {
+                throw this._getValidationError('users.EXISTING_USERNAME');
             }
+        }
 
-            var collection      = 'user';
-            var successRedirect = '/user/login';
-            var successMsg      = self.ls.g('login.ACCOUNT_CREATED');
+        async _validateEmail(user) {
+            let emails = await Promise.all([
+                this.sqs.count('user', {email: user.email}),
+                this.sqs.count('unverified_user', {email: user.email})
+            ]);
+
+            if(_.flatten(emails).length > 0) {
+                throw this._getValidationError('users.EXISTING_EMAIL');
+            }
+        }
+        _getValidationError(locKey) {
+            let err = new Error(this.ls.g(locKey));
+            err.code = 400;
+            return err;
+        }
+        _createDBO (payload, contentSettings) {
+            let collection = 'user';
+            this.successMsg = this.ls.g('login.ACCOUNT_CREATED');
+
             if(contentSettings.require_verification) {
-                collection      = 'unverified_user';
-                successRedirect = '/user/verification_sent';
-                successMsg      = self.ls.g('users.VERIFICATION_SENT') + post.email;
-                post.verificationCode = util.uniqueId();
+                collection = 'unverified_user';
+                this.successMsg = `${this.ls.g('users.VERIFICATION_SENT')}${payload.email}`;
+                payload.verificationCode = pb.util.uniqueId();
             }
+            return pb.DocumentCreator.create(collection, payload);
 
-            // This is the reason why emails are transformed to lowercase when signing up
-            // TODO: Change sign-up behaviour in 1.0
-            var user = pb.DocumentCreator.create(collection, post);
-
-            self.validateUniques(user, function(err, results) {
-                if(util.isError(err)) {
-                    return cb({
-                        code: 400,
-                        content: pb.BaseController.apiResponse(pb.BaseController.API_FAILURE, self.ls.g('users.EXISTING_USERNAME'))
-                    });
-                }
-
-                //check for validation failures
-                var errMsg = null;
-                if (results.verified_username > 0 || results.unverified_username > 0) {
-                    errMsg = self.ls.g('users.EXISTING_USERNAME');
-                }
-                else if (results.verified_email > 0 || results.unverified_email > 0) {
-                    errMsg = self.ls.g('users.EXISTING_EMAIL');
-                }
-
-                // Handle error
-                if (errMsg) {
-                    return cb({
-                        code: 400,
-                        content: pb.BaseController.apiResponse(pb.BaseController.API_FAILURE, errMsg)
-                    });
-                }
-                self.dao.save(user, function(err, data) {
-                    if(util.isError(err)) {
-                        return cb({
-                            code: 500,
-                            content: pb.BaseController.apiResponse(pb.BaseController.API_FAILURE, self.ls.g('generic.ERROR_SAVING'))
-                        });
-                    }
-
-                    cb({
-                        content: pb.BaseController.apiResponse(pb.BaseController.API_SUCCESS, successMsg)
-                    });
+        }
+        get payload () {
+            return Object.assign({},
+                this.body,
+                {
+                    position: '',
+                    photo: null,
+                    admin: pb.SecurityService.ACCESS_USER,
+                    username: pb.BaseController.sanitize(this.body.username),
+                    email: pb.BaseController.sanitize(this.body.email),
+                    first_name: pb.BaseController.sanitize(this.body.first_name),
+                    last_name: pb.BaseController.sanitize(this.body.last_name)
                 });
+        }
+        get requiredFields () {
+            return ['username', 'email', 'password', 'confirm_password'];
+        }
+    }
 
-                //send email for verification when required
-                if (contentSettings.require_verification) {
-                    self.service.sendVerificationEmail(user, util.cb);
-                }
-            });
-        });
-    };
-
-    SignUp.prototype.getRequiredFields = function() {
-        return ['username', 'email', 'password', 'confirm_password'];
-    };
-
-    /**
-     * @method validateUniques
-     * @param {Object} user
-     * @param {Function} cb
-     */
-    SignUp.prototype.validateUniques = function(user, cb) {
-        var self = this;
-        var tasks = {
-            verified_username: function(callback) {
-                self.dao.count('user', {username: user.username}, callback);
-            },
-            verified_email: function(callback) {
-                self.dao.count('user', {email: user.email}, callback);
-            },
-            unverified_username: function(callback) {
-                self.dao.count('unverified_user', {username: user.username}, callback);
-            },
-            unverified_email: function(callback) {
-                self.dao.count('unverified_user', {email: user.email}, callback);
-            }
-        };
-        async.series(tasks, cb);
-    };
-
-    //exports
-    return SignUp;
+    return SignUpController;
 };

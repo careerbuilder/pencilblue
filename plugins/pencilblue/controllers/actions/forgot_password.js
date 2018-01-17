@@ -1,81 +1,31 @@
-/*
-    Copyright (C) 2016  PencilBlue, LLC
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-'use strict';
-
 module.exports = function ForgotPasswordControllerModule(pb) {
+    class ForgotPasswordController extends pb.BaseController {
+        promisedInit () {
+            this.userService = new pb.UserService(this.getServiceContext());
+            this.passwordResetService = new pb.PasswordResetService(this.getServiceContext());
+        }
+        render () {
+            let returnUrl = this.query.admin ? '/admin/login' : '/user/login';
 
-    //pb dependencies
-    var util = pb.util;
-    var UserService = pb.UserService;
-    var SiteService = pb.SiteService;
-    var EmailService = pb.EmailService;
-    var PasswordResetService = pb.PasswordResetService;
+            try {
+                this.passwordResetService.addIfNotExists(this.body.username); // TODO: Promiseify this service
+            } catch (err) {
+                let msg = pb.util.isArray(err.validationErrors) ? err.validationErrors[0].message : err.message;
 
-    /**
-     * Sends a password reset email
-     * @class ForgotPasswordController
-     */
-    function ForgotPasswordController(){}
-    util.inherits(ForgotPasswordController, pb.FormController);
-
-    ForgotPasswordController.prototype.initSync = function(/*context*/) {
-
-        /**
-         * @property userService
-         * @type {UserService}
-         */
-        this.userService = new UserService(this.getServiceContext());
-
-        var ctx = this.getServiceContext();
-        ctx.userService = this.userService;
-        ctx.siteService = new SiteService(this.getServiceContext());
-        
-        // Use the global email settings in a multisite environment
-        ctx.emailService = new EmailService(util.union(this.getServiceContext(), {onlyThisSite: false}));
-
-        /**
-         * @property passwordResetService
-         * @type {PasswordResetService}
-         */
-        this.passwordResetService = new PasswordResetService(ctx);
-    };
-
-    /**
-     * @method render
-     * @param {Function} cb (Error|object)
-     */
-    ForgotPasswordController.prototype.render = function(cb) {
-        var self = this;
-        var returnURL = this.query.admin ? '/admin/login' : '/user/login';
-
-        this.passwordResetService.addIfNotExists(this.body.username, function(err/*, wrapper*/) {
-            if (util.isError(err)) {
-                var msg = err.message;
-                if (util.isArray(err.validationErrors)) {
-                    msg = err.validationErrors[0].message;
-                }
-                return self.formError(self.ls.g('generic.ERROR_SAVING') + ': ' + msg, returnURL, cb);
+                return this.formError(`${this.ls.g('generic.ERROR_SAVING')}: ${msg}`, returnUrl);
             }
+            this.session.success = this.ls.g('users.YOUR_PASSWORD_RESET');
+            this.redirect(returnUrl);
+        }
+        getServiceContext () {
+            let context = super.getServiceContext();
+            return Object.assign({}, context, {
+                userService: this.userService,
+                siteService: new pb.SiteService(context),
+                emailService: new pb.EmailService(Object.assign({}, context, {onlyThisSite: false}))
+            });
+        }
+    }
 
-            self.session.success = self.ls.g('users.YOUR_PASSWORD_RESET');
-            self.redirect(returnURL, cb);
-        });
-    };
-
-    //exports
     return ForgotPasswordController;
 };
