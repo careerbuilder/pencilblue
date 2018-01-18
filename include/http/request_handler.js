@@ -1471,9 +1471,9 @@ module.exports = function RequestHandlerModule(pb) {
 
             var cookieParameters = req.headers.cookie.split(';');
             for(var i = 0; i < cookieParameters.length; i++)  {
-
-                var keyVal = cookieParameters[i].split('=');
-                parsedCookies[keyVal[0]] = keyVal[1];
+                let keyVal = cookieParameters[i].split('=');
+                let key = keyVal[0]  ? keyVal[0].trim() : undefined;
+                parsedCookies[key] = keyVal[1];
             }
         }
         return parsedCookies;
