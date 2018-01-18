@@ -33,9 +33,9 @@ module.exports = function(pb) {
 
     this.getJSONPostParams(function(err, post) {
       //sanitize
-      post.current_password = BaseController.sanitize(post.current_password);
-      post.new_password     = BaseController.sanitize(post.new_password);
-      post.confirm_password = BaseController.sanitize(post.confirm_password);
+      post.current_password = pb.BaseObjectService.sanitize(post.current_password);
+      post.new_password     = pb.BaseObjectService.sanitize(post.new_password);
+      post.confirm_password = pb.BaseObjectService.sanitize(post.confirm_password);
 
       //validate
       var message;

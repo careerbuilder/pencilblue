@@ -18,6 +18,9 @@
 
 //dependencies
 var async = require('async');
+const FORM_REFILL_PATTERN = 'if(typeof refillForm !== "undefined") {' + "\n" +
+    '$(document).ready(function(){'+ "\n" +
+    'refillForm(%s)});}';
 
 module.exports = function(pb) {
 
@@ -88,7 +91,17 @@ module.exports = function(pb) {
           });
       });
     };
+    ArticleForm.prototype.checkForFormRefill = function(result, cb) {
+        if(this.session.fieldValues) {
+            var content    = util.format(FORM_REFILL_PATTERN, JSON.stringify(this.session.fieldValues));
+            var formScript = pb.ClientJs.getJSTag(content);
+            result         = result.concat(formScript);
 
+            delete this.session.fieldValues;
+        }
+
+        cb(null, result);
+    };
     ArticleForm.prototype.onTemplateRetrieved = function(template, cb) {
         cb(null, template);
     };

@@ -134,6 +134,40 @@ module.exports = function ApiActionControllerModule(pb) {
     };
 
     /**
+     *
+     * @method getSanitizationRules
+     * @return {Object}
+     */
+    ApiActionController.prototype.getSanitizationRules = function() {
+        return {};
+    };
+
+    /**
+     * Sanitizes an object.  This function is handy for incoming post objects.  It
+     * iterates over each field.  If the field is a string value it will be
+     * sanitized based on the default sanitization rules
+     * (BaseController.getDefaultSanitizationRules) or those provided by the call
+     * to BaseController.getSanitizationRules.
+     * @method sanitizeObject
+     * @param {Object} obj
+     */
+
+    ApiActionController.prototype.sanitizeObject = function(obj) {
+        if (!util.isObject(obj)) {
+            pb.log.warn("BaseController.sanitizeObject was not passed an object.");
+            return;
+        }
+
+        var rules = this.getSanitizationRules();
+        Object.keys(obj).forEach(function(prop) {
+            if (util.isString(obj[prop])) {
+
+                var config = rules[prop];
+                obj[prop] = pb.BaseObjectService.sanitize(obj[prop], config);
+            }
+        });
+    };
+    /**
      * @method getAutoSanitize
      * @return {Boolean
      */

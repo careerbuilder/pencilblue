@@ -90,6 +90,7 @@ module.exports = function PB(config) {
     pb.session        = new pb.SessionHandler(pb.SessionHandler.getSessionStoreInstance());
 
     pb.BaseObjectService = require(path.join(config.docRoot, '/include/service/base_object_service.js'))(pb);
+    pb.BaseService       = require(path.join(config.docRoot, '/include/service/abstract/base_service.js'))(pb);
 
     //setup site service
     pb.SiteService = require(path.join(config.docRoot, '/include/service/entities/site_service.js'))(pb);

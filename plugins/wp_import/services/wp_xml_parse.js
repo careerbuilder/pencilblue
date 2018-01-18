@@ -255,7 +255,7 @@ module.exports = function WPXMLParseServiceModule(pb) {
 
                         //get the topic name
                         var rawName = categories[i][descriptor.name][j];
-                        var topicName = pb.BaseController.sanitize(rawName.trim());
+                        var topicName = pb.BaseObjectService.sanitize(rawName.trim());
 
                         //when it doesn't exist
                         var lower = topicName.toLowerCase();

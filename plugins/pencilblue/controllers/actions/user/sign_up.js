@@ -106,10 +106,10 @@ module.exports = function (pb) {
                     position: '',
                     photo: null,
                     admin: pb.SecurityService.ACCESS_USER,
-                    username: pb.BaseController.sanitize(this.body.username),
-                    email: pb.BaseController.sanitize(this.body.email),
-                    first_name: pb.BaseController.sanitize(this.body.first_name),
-                    last_name: pb.BaseController.sanitize(this.body.last_name)
+                    username: pb.BaseObjectService.sanitize(this.body.username),
+                    email: pb.BaseObjectService.sanitize(this.body.email),
+                    first_name: pb.BaseObjectService.sanitize(this.body.first_name),
+                    last_name: pb.BaseObjectService.sanitize(this.body.last_name)
                 });
         }
         get requiredFields () {

@@ -78,7 +78,7 @@ module.exports = function(pb) {
 
     NewPagePostController.prototype.getSanitizationRules = function() {
         return {
-            page_layout: pb.BaseController.getContentSanitizationRules()
+            page_layout: pb.BaseObjectService.getContentSanitizationRules()
         };
     };
 

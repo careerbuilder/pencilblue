@@ -676,7 +676,7 @@ module.exports = function CustomObjectServiceModule(pb) {
                 }
 
                 //test for HTML
-                var sanitized = pb.BaseController.sanitize(custObj.name);
+                var sanitized = pb.BaseObjectService.sanitize(custObj.name);
                 if (sanitized !== custObj.name) {
                     errors.push(CustomObjectService.err('name', 'The name cannot contain HTML'));
                     return callback(null);
@@ -776,7 +776,7 @@ module.exports = function CustomObjectServiceModule(pb) {
                 }
 
                 //test for HTML
-                var sanitized = pb.BaseController.sanitize(custObjType.name);
+                var sanitized = pb.BaseObjectService.sanitize(custObjType.name);
                 if (sanitized !== custObjType.name) {
                     errors.push(CustomObjectService.err('name', 'The name cannot contain HTML'));
                     return callback(null);
@@ -1113,7 +1113,7 @@ module.exports = function CustomObjectServiceModule(pb) {
             else if (custObjType.fields[key].field_type === 'wysiwyg') {
 
                 //ensure not funky script tags or iframes
-                post[key] = pb.BaseController.sanitize(post[key], pb.BaseController.getContentSanitizationRules());
+                post[key] = pb.BaseObjectService.sanitize(post[key], pb.BaseObjectService.getContentSanitizationRules());
             }
             else if(custObjType.fields[key].field_type === CHILD_OBJECTS_TYPE) {
                 if(util.isString(post[key])) {
@@ -1135,7 +1135,7 @@ module.exports = function CustomObjectServiceModule(pb) {
             else if (util.isString(post[key])){
 
                 //when nothing else matches and we just have a string. We should sanitize it
-                post[key] = pb.BaseController.sanitize(post[key]);
+                post[key] = pb.BaseObjectService.sanitize(post[key]);
             }
         });
         post.type = custObjType[pb.DAO.getIdField()].toString();

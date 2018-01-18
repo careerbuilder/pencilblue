@@ -17,7 +17,7 @@
 'use strict';
 
 //dependencies
-var util = require('../util.js');
+var util = require('../../../util.js');
 
 module.exports = function TemplateEntityService(pb) {
 

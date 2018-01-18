@@ -93,7 +93,7 @@ module.exports = function(pb) {
 
     EditArticle.prototype.getSanitizationRules = function() {
         return {
-            article_layout: pb.BaseController.getContentSanitizationRules()
+            article_layout: pb.BaseObjectService.getContentSanitizationRules()
         };
     };
 

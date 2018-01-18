@@ -69,7 +69,7 @@ module.exports = function SaveHomePageSettingsModule(pb) {
 
     SaveHomePageSettings.prototype.getSanitizationRules = function() {
         return {
-            page_layout: pb.BaseController.getContentSanitizationRules()
+            page_layout: pb.BaseObjectService.getContentSanitizationRules()
         };
     };
 

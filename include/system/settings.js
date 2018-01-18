@@ -205,9 +205,9 @@ module.exports = function SettingsModule(pb) {
      */
     SettingService.format = function(context, cb) {
         var dto = context.data;
-        dto.key = pb.BaseController.sanitize(dto.key);
+        dto.key = pb.BaseObjectService.sanitize(dto.key);
         if (util.isString(dto.value)) {
-            dto.value = pb.BaseController.sanitize(dto.value);
+            dto.value = pb.BaseObjectService.sanitize(dto.value);
         }
         cb(null);
     };

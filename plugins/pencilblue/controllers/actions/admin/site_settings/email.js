@@ -48,7 +48,7 @@ module.exports = function(pb) {
 
     Email.prototype.getSanitizationRules = function() {
         return {
-            verification_content: pb.BaseController.getContentSanitizationRules()
+            verification_content: pb.BaseObjectService.getContentSanitizationRules()
         };
     };
 

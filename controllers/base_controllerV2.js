@@ -32,17 +32,6 @@ module.exports = function BaseControllerModule(pb) {
      * The snippet of JS code that will ensure that a form is refilled with values
      * from the post
      */
-    const FORM_REFILL_PATTERN = 'if(typeof refillForm !== "undefined") {' + "\n" +
-        '$(document).ready(function(){'+ "\n" +
-        'refillForm(%s)});}';
-    const ALERT_PATTERN = '<div class="alert %s error_success">%s<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
-
-    const ENCODING_MAPPING = Object.freeze({
-        'UTF-8': 'utf8',
-        'US-ASCII': 'ascii',
-        'UTF-16LE': 'utf16le'
-    });
-
 
     class BaseController {
         init (context) {
@@ -121,10 +110,11 @@ module.exports = function BaseControllerModule(pb) {
         _getBaseTemplateModel (context) {
             return {
                 meta_lang: this.ls.language,
+                site_root: this.hostname,
+                site_name: this.siteName,
+                localization_script: new pb.TemplateValue(pb.ClientJs.includeJS('/api/localization/script'), false),
                 error_success: (flag, cb) => this._displayErrorOrSuccessCallback(flag, cb),
                 page_name: (flag, cb) => cb(null, this.pageName),
-
-                localization_script: new pb.TemplateValue(pb.ClientJs.includeJS('/api/localization/script'), false),
                 analytics: (flag, cb) => pb.AnalyticsManager.onPageRender(this.req, this.session, this.ls, cb),
                 wysiwyg: (flag, cb) => {
                     let wysiwygId = pb.util.uniqueId();
@@ -134,10 +124,8 @@ module.exports = function BaseControllerModule(pb) {
                         cb(err, new pb.TemplateValue(data, false));
                     });
                 },
-                site_root: this.hostname,
-                site_name: this.siteName,
-                localized_alternate: (flag, cb) => this.onLocalizedAlternateFlagFound(context.routeLocalized, cb)
-            };
+                localized_alternate: (flag, cb) => cb(null, this._onLocalizedAlternateFlagFound(context.routeLocalized))
+            }
         }
 
         formError (message, redirectLocation, cb) {
@@ -171,49 +159,12 @@ module.exports = function BaseControllerModule(pb) {
             this._pageName = name;
         }
 
-        get sanitizationRules () {
-            return {};
-        }
-
         static apiResponse (code, message, data = null) {
             if(!message) {
                 message = code === BaseController.API_SUCCESS ? 'SUCCESS' : 'FAILURE';
             }
             return JSON.stringify({code, message, data});
         }
-
-
-
-        /**
-         * The sanitization rules that apply to Pages and Articles
-         * @deprecated Since 0.4.1
-         * @static
-         * @method getContentSanitizationRules
-         */
-        BaseController.getContentSanitizationRules = function() {
-            return pb.BaseObjectService.getContentSanitizationRules();
-        };
-
-        /**
-         * @deprecated Since 0.4.1
-         * @static
-         * @method getDefaultSanitizationRules
-         */
-        BaseController.getDefaultSanitizationRules = function() {
-            return pb.BaseObjectService.getDefaultSanitizationRules();
-        };
-
-        /**
-         *
-         * @deprecated Since 0.4.1
-         * @static
-         * @method sanitize
-         * @param {String} value
-         * @param {Object} [config]
-         */
-        static sanitize (value, config) {
-            return pb.BaseObjectService.sanitize(value, config);
-        };
 
         /**
          * Redirects a request to a different location
@@ -222,7 +173,42 @@ module.exports = function BaseControllerModule(pb) {
          * @param {Function} cb
          */
         redirect (location, cb){
-            cb(pb.RequestHandler.generateRedirect(location));
+            let redirect = pb.RequestHandler.generateRedirect(location);
+            return cb ? cb(redirect) : redirect;
+        }
+
+        _onLocalizedAlternateFlagFound (routeLocalized) {
+            if (!routeLocalized) {
+                 return '';
+            }
+
+            let val = '';
+            Object.keys(this.siteObj.supportedLocales).forEach(function(locale) {
+                var path = self.req.url;
+                var isLocalizedPath = !!self.pathVars.locale && path.indexOf(self.pathVars.locale) >= 0;
+                if (self.ls.language === locale && !isLocalizedPath) {
+                    //skip current language.  We don't need to list it as an alternate
+                    return;
+                }
+                var relationship = self.ls.language === locale ? 'canonical' : 'alternate';
+
+                var urlOpts = {
+                    hostname: self.hostname,
+                    locale: undefined
+                };
+                if (self.ls.language === locale) {
+                    path = path.replace(locale + '/', '').replace(locale, '');
+                }
+                else if (isLocalizedPath) {
+                    path = path.replace(self.pathVars.locale, locale);
+                }
+                else {
+                    urlOpts.locale = locale;
+                }
+                var url = pb.UrlService.createSystemUrl(path, urlOpts);
+                val += `<link rel="${relationship}" hreflang="${locale}" href="${url}" />\n`;
+            });
+            return new pb.TemplateValue(val, false);
         };
     }
 
@@ -231,50 +217,17 @@ module.exports = function BaseControllerModule(pb) {
     BaseController.API_FAILURE = 1;
 
     /**
-     * @method onLocalizedAlternateFlagFound
-     * @param {Boolean} routeLocalized
-     * @param {Function} cb
-     */
-    BaseController.prototype.onLocalizedAlternateFlagFound = function(routeLocalized, cb) {
-        if (!routeLocalized) {
-            return cb(null, '');
-        }
-
-        var val = '';
-        var self = this;
-        Object.keys(this.siteObj.supportedLocales).forEach(function(locale) {
-            var path = self.req.url;
-            var isLocalizedPath = !!self.pathVars.locale && path.indexOf(self.pathVars.locale) >= 0;
-            if (self.ls.language === locale && !isLocalizedPath) {
-                //skip current language.  We don't need to list it as an alternate
-                return;
-            }
-            var relationship = self.ls.language === locale ? 'canonical' : 'alternate';
-
-            var urlOpts = {
-                hostname: self.hostname,
-                locale: undefined
-            };
-            if (self.ls.language === locale) {
-                path = path.replace(locale + '/', '').replace(locale, '');
-            }
-            else if (isLocalizedPath) {
-                path = path.replace(self.pathVars.locale, locale);
-            }
-            else {
-                urlOpts.locale = locale;
-            }
-            var url = pb.UrlService.createSystemUrl(path, urlOpts);
-            val += '<link rel="' + relationship + '" hreflang="' + locale + '" href="' + url + '" />\n';
-        });
-        cb(null, new pb.TemplateValue(val, false));
-    };
-
-    /**
      *
+     * @deprecated as of version 0.9.0
      * @method getPostParams
      * @param {Function} cb
      */
+    const ENCODING_MAPPING = Object.freeze({
+        'UTF-8': 'utf8',
+        'US-ASCII': 'ascii',
+        'UTF-16LE': 'utf16le'
+    });
+
     BaseController.prototype.getPostParams = function(cb) {
         var self = this;
 
@@ -335,6 +288,7 @@ module.exports = function BaseControllerModule(pb) {
 
     /**
      *
+     * @deprecated as of version 0.9.0
      * @method getPostData
      * @param {Function} cb
      */
@@ -385,110 +339,6 @@ module.exports = function BaseControllerModule(pb) {
 
         return null;
     };
-
-    /**
-     *
-     * @method setFormFieldValues
-     * @param {Object} post
-     */
-    BaseController.prototype.setFormFieldValues = function(post) {
-        this.session.fieldValues = post;
-        return this.session;
-    };
-
-    /**
-     *
-     * @method checkForFormRefill
-     * @param {String} result
-     * @param {Function} cb
-     */
-    BaseController.prototype.checkForFormRefill = function(result, cb) {
-        if(this.session.fieldValues) {
-            var content    = util.format(FORM_REFILL_PATTERN, JSON.stringify(this.session.fieldValues));
-            var formScript = pb.ClientJs.getJSTag(content);
-            result         = result.concat(formScript);
-
-            delete this.session.fieldValues;
-        }
-
-        cb(null, result);
-    };
-
-    /**
-     * Sanitizes an object.  This function is handy for incoming post objects.  It
-     * iterates over each field.  If the field is a string value it will be
-     * sanitized based on the default sanitization rules
-     * (BaseController.getDefaultSanitizationRules) or those provided by the call
-     * to BaseController.getSanitizationRules.
-     * @method sanitizeObject
-     * @param {Object} obj
-     */
-    BaseController.prototype.sanitizeObject = function(obj) {
-        if (!util.isObject(obj)) {
-            pb.log.warn("BaseController.sanitizeObject was not passed an object.");
-            return;
-        }
-
-        var rules = this.getSanitizationRules();
-        Object.keys(obj).forEach(function(prop) {
-            if (util.isString(obj[prop])) {
-
-                var config = rules[prop];
-                obj[prop] = pb.BaseObjectService.sanitize(obj[prop], config);
-            }
-        });
-    };
-
-    /**
-     *
-     * @method getSanitizationRules
-     * @return {Object}
-     */
-    BaseController.prototype.getSanitizationRules = function() {
-        return {};
-    };
-
-    /**
-     * The sanitization rules that apply to Pages and Articles
-     * @deprecated Since 0.4.1
-     * @static
-     * @method getContentSanitizationRules
-     */
-    BaseController.getContentSanitizationRules = function() {
-        return pb.BaseObjectService.getContentSanitizationRules();
-    };
-
-    /**
-     * @deprecated Since 0.4.1
-     * @static
-     * @method getDefaultSanitizationRules
-     */
-    BaseController.getDefaultSanitizationRules = function() {
-        return pb.BaseObjectService.getDefaultSanitizationRules();
-    };
-
-    /**
-     *
-     * @deprecated Since 0.4.1
-     * @static
-     * @method sanitize
-     * @param {String} value
-     * @param {Object} [config]
-     */
-    BaseController.sanitize = function(value, config) {
-        return pb.BaseObjectService.sanitize(value, config);
-    };
-
-    /**
-     * Redirects a request to a different location
-     * @method redirect
-     * @param {String} location
-     * @param {Function} cb
-     */
-    BaseController.prototype.redirect = function(location, cb){
-        cb(pb.RequestHandler.generateRedirect(location));
-    };
-
 
     return BaseController;
 };
