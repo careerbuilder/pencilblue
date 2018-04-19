@@ -13,6 +13,7 @@ plugins/*
 !plugins/pencilblue/**
 !plugins/ga
 !plugins/ga/**
+!plugins/kronos/**
 !plugins/portfolio
 !plugins/portfolio/**
 !plugins/sample
