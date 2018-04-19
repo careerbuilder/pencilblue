@@ -1,0 +1,32 @@
+{
+    "uid": "kronos",
+    "name": "Kronos Theme",
+    "description": "A kronos site theme for PencilBlue",
+    "version": "0.2.1",
+    "pb_version": ">=0.5.x <1.x",
+    "author": {
+        "name": "PencilBlue",
+        "email": "info@pencilblue.org",
+        "website": "http://pencilblue.org",
+        "contributors": [
+            {
+                "name": "Logan Genet",
+                "email": ""
+            }
+        ]
+    },
+    "settings": [],
+    "permissions": {
+        "ACCESS_USER": [],
+        "ACCESS_WRITER": [],
+        "ACCESS_EDITOR": [],
+        "ACCESS_MANAGING_EDITOR": []
+    },
+    "main_module": {
+        "path": "kronos.js"
+    },
+    "theme": {
+        "settings": [],
+        "content_templates": []
+    }
+}

@@ -1,0 +1,27 @@
+^tmp_head^
+<script>
+    __vue_model = ^vue_model^;
+</script>
+<div class="container-fluid">
+    ^tmp_admin=shared=admin_header^
+    <div id="content-row" class="row">
+        <div class="col-sm-3">
+            <div class="well">
+                <admin-nav-bar v-bind:item-list="adminNav"></admin-nav-bar>
+            </div>
+        </div>
+        <div class="col-sm-9">
+            <div class="well">
+                <h2>Pencilblue Statistics</h2>
+                {{ message }}
+            </div>
+            <div class="well">
+                <h3>Cluster Health</h3>
+                <server-record-table v-bind:server-record-list="__vue_model.cluster"></server-record-table>
+            </div>
+        </div>
+    </div>
+    ^tmp_admin=shared=admin_footer^
+</div>
+^tmp_footer^
+

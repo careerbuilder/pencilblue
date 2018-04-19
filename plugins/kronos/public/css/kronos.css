@@ -1,0 +1,41 @@
+#header-row {
+    background: #FFFFFF;
+    margin: 15px 0px;
+}
+#content-row {
+    background: #E4E4E4;
+    padding-top: 15px;
+}
+#footer-row {
+    background: #01AAD5;
+    padding: 15px;
+    color: #FFFFFF;
+}
+.admin-nav-list {
+    list-style: none;
+    padding: 0px;
+}
+.admin-nav-item a {
+    border: none;
+    color: #5D5D5D;
+    font-size: 16px;
+}
+.admin-nav-item {
+    background-color: #FFFFFF;
+    padding: 0.75em;
+}
+.admin-nav-item:hover, .admin-nav-item:hover a, .admin-nav-item:hover .admin-nav-item {
+    background-color: #B3B3B3;
+    color: #FFFFFF;
+    text-decoration: none;
+    cursor: pointer;
+}
+.admin-nav-item:hover .admin-nav-item:hover, .admin-nav-item:hover .admin-nav-item:hover a {
+    background: #5D5D5D;
+    color: #FFFFFF;
+    text-decoration: none;
+}
+.well {
+    border-top: 5px solid #01AAD5;
+    background: #FFFFFF;
+}
