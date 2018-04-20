@@ -20,7 +20,9 @@ module.exports = function IndexModule(pb) {
                 {
                     method: 'get',
                     path: '/kronos',
-                    auth_required: false,
+                    auth_required: true,
+                    inactive_site_access: true,
+                    access_level: pb.SecurityService.ACCESS_WRITER,
                     content_type: 'text/html'
                 }
             ]);
