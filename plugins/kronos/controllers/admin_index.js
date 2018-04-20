@@ -5,7 +5,7 @@ module.exports = function IndexModule(pb) {
     class AdminIndex extends pb.BaseController {
 
         async render (cb) {
-            this.vueModelService = new (pb.PluginService.getService('VueModelRegistrationService', 'kronos', this.site))({ts: this.ts});
+            this.vueModelService = this.createService('VueModelRegistrationService', 'kronos');
 
             this.vueModelService.add({
                 cluster: await pb.ServerRegistration.getInstance().getClusterStatusAsync(),
@@ -14,6 +14,10 @@ module.exports = function IndexModule(pb) {
             return this.ts.loadAsync('/admin_index')
                 .then(content => cb({content}))
                 .catch(err => cb({content: err}));
+        }
+
+        createService(serviceName, pluginName) {
+            return new (pb.PluginService.getService(serviceName, pluginName, this.site))(this.getServiceContext());
         }
         static getRoutes (cb) {
             cb(null, [
