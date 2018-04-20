@@ -1,16 +1,20 @@
+const Promise = require('bluebird');
 module.exports = function IndexModule(pb) {
+    Promise.promisifyAll(pb);
 
     class AdminIndex extends pb.BaseController {
 
-        _getDummyServerClusterData () {
-            return [{
-                ip: '127.0.0.1',
-                port: '8080',
-                process_type: 'worker',
-                mem_usage: {
-                    heapUsed: 100000
-                }
-            }];
+        async _getDummyServerClusterData () {
+            return pb.ServerRegistration.getInstance()
+                .getClusterStatusAsync();
+            // return [{
+            //     ip: '127.0.0.1',
+            //     port: '8080',
+            //     process_type: 'worker',
+            //     mem_usage: {
+            //         heapUsed: 100000
+            //     }
+            // }];
         }
         _getDummyAdminNav () {
             return [
@@ -25,15 +29,16 @@ module.exports = function IndexModule(pb) {
                 {text: 'Logout', icon: 'fa-power-off', link: '/actions/logout'}
             ]
         }
-        render (cb) {
+        async render (cb) {
             this.vueModelService = new (pb.PluginService.getService('VueModelRegistrationService', 'kronos', this.site))({ts: this.ts});
 
-            this.vueModelService.add({cluster: this._getDummyServerClusterData()});
-            this.vueModelService.add({adminNav: this._getDummyAdminNav()});
-
-            this.ts.load('/admin_index', (err, data) => {
-                cb({content: data});
+            this.vueModelService.add({
+                cluster: await pb.ServerRegistration.getInstance().getClusterStatusAsync(),
+                adminNav: pb.AdminNavigation.get(this.session, ['dashboard'], this.localizationService, this.site)
             });
+            return this.ts.loadAsync('/admin_index')
+                .then(content => cb({content}))
+                .catch(err => cb({content: err}));
         }
         static getRoutes (cb) {
             cb(null, [

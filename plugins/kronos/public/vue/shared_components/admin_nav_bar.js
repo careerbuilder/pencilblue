@@ -1,8 +1,8 @@
 Vue.component('admin-nav-item', {
     props: ['item'],
     template: `
-        <a :href="item.link">
-            <span class="fa fa-fw" :class="item.icon"></span> {{item.text}}
+        <a :href="item.href">
+            <span class="fa fa-fw" :class="'fa-'+item.icon"></span> {{item.title}}
         </a>
     `
 });
@@ -12,7 +12,7 @@ Vue.component('admin-nav-bar', {
       getId: function (item) {
           return item.id ?
               item.id :
-              `${item.text.toLowerCase().trim().replace(/\s+/g, '-')}-nav-item`;
+              `${item.title.toLowerCase().trim().replace(/\s+/g, '-')}-nav-item`;
       }
     },
     template: `
@@ -23,7 +23,7 @@ Vue.component('admin-nav-bar', {
                 </div>
                 <div v-if="item.children">
                     <a data-toggle="collapse" :data-target="'#' + getId(item)">
-                        <span class="fa fa-fw" :class="item.icon"></span> {{item.text}}
+                        <admin-nav-item v-bind:item="item"></admin-nav-item>
                     </a>
 
                     <div :id="getId(item)" class="collapse">
