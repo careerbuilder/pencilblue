@@ -39,3 +39,34 @@
     border-top: 5px solid #01AAD5;
     background: #FFFFFF;
 }
+
+#login-page img {
+    margin-bottom: 15px;
+}
+#login-page .login-btn {
+    margin-top: 15px;
+    background: #01AAD5;
+    width: 100%;
+    display: block;
+    color: #fff;
+}
+#login-page input {
+    width: 100%;
+}
+#login-page label {
+    margin-top: 15px;
+    display: block;
+}
+#login-page .global-error {
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    display: inline-block;
+}
+input.error {
+    border: 1px solid darkred;
+}
+
+span.error {
+    color: darkred;
+}

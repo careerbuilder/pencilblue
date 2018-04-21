@@ -1,29 +1,29 @@
-const Promise = require('bluebird');
-module.exports = function IndexModule(pb) {
-    Promise.promisifyAll(pb);
+module.exports = function (pb) {
 
-    class AdminIndex extends pb.BaseController {
+    class AdminIndex extends require('./admin_base_controller')(pb) {
 
         async render (cb) {
-            this.vueModelService = this.createService('VueModelRegistrationService', 'kronos');
-
             this.vueModelService.add({
                 cluster: await pb.ServerRegistration.getInstance().getClusterStatusAsync(),
-                adminNav: pb.AdminNavigation.get(this.session, ['dashboard'], this.localizationService, this.site)
+                adminNav: this.AdminNavigationService.get(this.session, ['dashboard'], this.localizationService, this.site)
             });
-            return this.ts.loadAsync('/admin_index')
-                .then(content => cb({content}))
-                .catch(err => cb({content: err}));
+
+            return this.load('/admin_index', cb);
         }
 
-        createService(serviceName, pluginName) {
-            return new (pb.PluginService.getService(serviceName, pluginName, this.site))(this.getServiceContext());
-        }
         static getRoutes (cb) {
             cb(null, [
                 {
                     method: 'get',
                     path: '/kronos',
+                    auth_required: true,
+                    inactive_site_access: true,
+                    access_level: pb.SecurityService.ACCESS_WRITER,
+                    content_type: 'text/html'
+                },
+                {
+                    method: 'get',
+                    path: '/admin',
                     auth_required: true,
                     inactive_site_access: true,
                     access_level: pb.SecurityService.ACCESS_WRITER,

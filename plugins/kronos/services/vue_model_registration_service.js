@@ -1,17 +1,14 @@
 module.exports = function(pb) {
 
-    class VueModelRegistrationService {
+    class VueModelRegistrationService extends require('./base_service')(pb) {
         constructor (context) {
-            this.context = context;
+            super(context);
             this.ts = context.ts;
             this.model = {};
 
             this.ts.registerLocal('vue_model', (flag, cb) => cb(null, new pb.TemplateValue(JSON.stringify(this.model), false)));
         }
 
-        static init (cb) {
-            cb(null, true);
-        }
         static getName() {
             return 'VueModelRegistrationService';
         }

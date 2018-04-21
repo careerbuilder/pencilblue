@@ -31,30 +31,9 @@ var app = new Vue({
         'Integer sagittis sagittis tempor. Sed aliquam arcu sit amet leo interdum mollis eu ac tellus. Morbi non velit blandit, maximus arcu eget, aliquam velit. Suspendisse lacinia, leo vel aliquet sollicitudin, lorem nibh laoreet orci, in iaculis mi dolor eget quam. Duis luctus sapien vel viverra efficitur. Nulla vitae purus at magna consequat vehicula et vitae nunc. Nullam congue, augue vel commodo congue, lorem sem aliquet eros, sed auctor sapien purus non lorem.\n' +
         '\n',
         adminNav: [],
-        cluster: []
-    },
-    methods: {
-        basicAction: function () {
-            this.message = "I am a basic message";
-        },
-        changeMessage: function () {
-            console.log(this.message);
-            this.message = '';
-            for(var i = 0; i < 2500; i++)
-                this.message += getRandomChar();
-            console.log(this.message);
-        }
+        cluster: [],
+        postQuery: ''
     }
 });
 
 Object.keys(__vue_model).forEach(key => app[key] = __vue_model[key]);
-
-
-function getRandomChar() {
-    let random = (Math.random() *100 % 26).toFixed(0);
-    let chanceOfSpace = (Math.random() * 100).toFixed(0);
-    if(chanceOfSpace <= 5) {
-        return ' ';
-    }
-    return String.fromCharCode(96 + Number(random));
-}
