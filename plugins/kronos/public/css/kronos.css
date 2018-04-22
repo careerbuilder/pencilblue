@@ -40,6 +40,54 @@
     background: #FFFFFF;
 }
 
+.progress-console {
+    width: 100%;
+}
+
+.plugin-grid.panel {
+    border-radius: 0px;
+}
+.plugin-grid .plugin-settings-column button{
+    float:right;
+}
+
+.plugin-grid th {
+    padding: 4px 8px;
+}
+.plugin-settings-btn {
+    border: 1px solid #CCC;
+    font-size: 12px;
+    padding: 5px 10px;
+    color: #333;
+    white-space: nowrap;
+}
+.plugin-settings-btn:hover {
+    text-decoration: none;
+    background-color: #5D5D5D;
+    border: 1px solid #5D5D5D;
+    color: #FFFFFF;
+}
+.plugin-setting-btn-group {
+    float: right;
+    display: flex;
+}
+#pill-nav {
+    float: right;
+}
+
+#pill-nav a {
+    background: #01AAD5;
+    color: #FFFFFF;
+    padding: 5px 10px;
+    float: initial;
+    margin: 0 5px;
+    display: inline-block;
+}
+#pill-nav a:hover {
+    text-decoration: none;
+    opacity: 0.8;
+}
+
 #login-page img {
     margin-bottom: 15px;
 }

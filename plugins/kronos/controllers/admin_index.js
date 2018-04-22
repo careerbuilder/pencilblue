@@ -5,7 +5,7 @@ module.exports = function (pb) {
         async render (cb) {
             this.vueModelService.add({
                 cluster: await pb.ServerRegistration.getInstance().getClusterStatusAsync(),
-                adminNav: this.AdminNavigationService.get(this.session, ['dashboard'], this.localizationService, this.site)
+                navigation: this.AdminNavigationService.get(this.session, ['dashboard'], this.localizationService, this.site)
             });
 
             return this.load('/admin_index', cb);

@@ -18,6 +18,7 @@ Vue.component('search-bar', {
 }
 });
 
+Vue.prototype.$bus = new Vue({})
 
 var app = new Vue({
     el: '#kronosapp',
@@ -30,9 +31,9 @@ var app = new Vue({
         '\n' +
         'Integer sagittis sagittis tempor. Sed aliquam arcu sit amet leo interdum mollis eu ac tellus. Morbi non velit blandit, maximus arcu eget, aliquam velit. Suspendisse lacinia, leo vel aliquet sollicitudin, lorem nibh laoreet orci, in iaculis mi dolor eget quam. Duis luctus sapien vel viverra efficitur. Nulla vitae purus at magna consequat vehicula et vitae nunc. Nullam congue, augue vel commodo congue, lorem sem aliquet eros, sed auctor sapien purus non lorem.\n' +
         '\n',
-        adminNav: [],
-        cluster: [],
-        postQuery: ''
+        navigation: [],
+        pills: [],
+        pluginData: {}
     }
 });
 
