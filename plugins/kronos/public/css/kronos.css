@@ -11,33 +11,62 @@
     padding: 15px;
     color: #FFFFFF;
 }
+
+
 .admin-nav-list {
     list-style: none;
     padding: 0px;
 }
-.admin-nav-item a {
-    border: none;
+
+.admin-sub-nav-list .admin-nav-item.active, .admin-sub-nav-list .admin-nav-item:hover{
+    background: #E7E7E7;
     color: #5D5D5D;
-    font-size: 16px;
 }
-.admin-nav-item {
-    background-color: #FFFFFF;
-    padding: 0.75em;
+.admin-sub-nav-list .admin-nav-item.active:hover, .admin-nav-item.active  {
+    background: #B3B3B3;
+    color: #FFFFFF;
 }
+.admin-nav-item.active:hover {
+    background: #5D5D5D;
+    color: #FFFFFF;
+}
+/* Dropdown Selected Color/Hover of selected dropdown item: #B3B3B3 */
+/* Dropdown Item Hover Color: #E7E7E7*/
+/* Drodpwon Selected Hover Color: #5D5D5D*/
+
 .admin-nav-item:hover, .admin-nav-item:hover a, .admin-nav-item:hover .admin-nav-item {
     background-color: #B3B3B3;
     color: #FFFFFF;
     text-decoration: none;
     cursor: pointer;
 }
-.admin-nav-item:hover .admin-nav-item:hover, .admin-nav-item:hover .admin-nav-item:hover a {
-    background: #5D5D5D;
-    color: #FFFFFF;
+
+.admin-sub-nav-list .admin-nav-item {
+    padding:.25em .25em .25em 2em;
+}
+
+.admin-nav-item {
+    border: none;
+    color: #5D5D5D;
+    font-size: 16px;
+    background-color: #FFFFFF;
+    padding: 0.75em;
+    display: inline-block;
+    width: 100%;
+}
+.admin-nav-item:hover {
     text-decoration: none;
 }
 .well {
     border-top: 5px solid #01AAD5;
     background: #FFFFFF;
+}
+a {
+    color: #01AAD5;
+}
+a:hover, a:focus, a:active {
+    text-decoration:  none;
+    color: #5D5D5D;
 }
 
 .progress-console {
@@ -85,7 +114,8 @@
 }
 #pill-nav a:hover {
     text-decoration: none;
-    opacity: 0.8;
+    background: #5D5D5D;
+    color: white;
 }
 
 #login-page img {
