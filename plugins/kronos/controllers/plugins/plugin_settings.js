@@ -3,8 +3,8 @@ module.exports = function (pb) {
     class PluginSettingsController extends require('../admin_base_controller')(pb) {
 
         init (context, cb) {
-            super.init(context, function () {
-                this.pluginRenderingService = this.createService('PluginRenderingService', 'kronos');
+            super.init(context, () => {
+                this.pluginRenderingService = this.createService('PluginSettingsRenderingService', 'kronos');
                 cb(null, true);
             });
         }

@@ -23,6 +23,9 @@ module.exports = function (pb) {
         createService(serviceName, pluginName) {
             return new (this.getServiceClass(serviceName, pluginName))(this.context);
         }
+        clone (obj) {
+            return JSON.parse(JSON.stringify(obj));
+        }
     }
 
     return BaseService;

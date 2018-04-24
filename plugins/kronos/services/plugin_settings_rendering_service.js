@@ -3,7 +3,10 @@ const SettingTypes = require('../lib/plugin_settings_types');
 module.exports = function (pb) {
 
     class PluginSettingsRenderingService extends require('./base_service')(pb) {
-
+        constructor(context) {
+            super(context);
+            this.pluginService = new pb.PluginService(this.context);
+        }
         async buildSettingsObject(pluginUid) {
             let settings = await this.pluginService.getSettingsAsync(pluginUid);
             if (!settings) {
@@ -73,8 +76,8 @@ module.exports = function (pb) {
             return settings;
         };
 
-        _deriveLabel(override, fallback) {
-            let label = this.ls.g(override);
+        _deriveLabel(override = '', fallback) {
+            let label = this.ls.g(override || fallback);
 
             if (!label || label === override) {
                 label = fallback.split('_').join(' ');
