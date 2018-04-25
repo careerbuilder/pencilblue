@@ -28,20 +28,31 @@ module.exports = function (pb) {
                 navigation: this.AdminNavigationService.get(this.session, ['plugins', 'manage'], this.ls, this.site),
                 pills: this.pills,
                 settings,
-                pluginUid,
-                type: 'plugin' // TODO: Eval if we need this
+                pluginUid
             });
 
             return this.load('/plugins/plugin_settings', cb);
         }
         get pills() {
            return [
-                {
-                    name: 'manage_plugins',
-                    title: `${this.plugin.name} ${this.ls.g('admin.SETTINGS')}`,
-                    icon: 'chevron-left',
-                    href: '/admin/plugin'
-                }
+               {
+                   name: 'admin_home',
+                   title: `Home`,
+                   icon: 'home',
+                   href: '/kronos'
+               },
+               {
+                   name: 'manage_plugins',
+                   title: `Manage Plugins`,
+                   icon: 'chevron-left',
+                   href: '/kronos/plugins'
+               },
+               {
+                   name: `${this.plugin.name}_plugin_settings`,
+                   title: `${this.plugin.name} ${this.ls.g('admin.SETTINGS')}`,
+                   icon: 'cog',
+                   href: `/kronos/plugins/${this.plugin.name}`
+               }
             ];
         }
 

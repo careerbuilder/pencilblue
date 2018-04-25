@@ -18,9 +18,9 @@ Vue.component('search-bar', {
 }
 });
 
-Vue.prototype.$bus = new Vue({})
+Vue.prototype.$bus = new Vue({});
 
-var app = new Vue({
+const app = new Vue({
     el: '#kronosapp',
     data: {
         message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam a dignissim quam. Phasellus mollis eros eget felis vehicula convallis. Etiam lobortis ut ligula ut vulputate. Donec interdum leo vitae sapien maximus gravida. Curabitur ac sollicitudin nibh, sit amet venenatis diam. Suspendisse euismod, nunc in lacinia ornare, nibh ligula lacinia lacus, quis placerat orci enim sit amet enim. In sem tellus, feugiat non mattis vitae, fermentum eu dolor. Fusce lobortis dolor leo, sit amet sodales tellus tempor ut. Mauris id placerat diam, a posuere velit. Suspendisse efficitur nulla eu ante tristique, non sollicitudin ipsum vehicula. Sed sed nunc diam. Phasellus ligula urna, scelerisque quis metus nec, ultricies scelerisque arcu. Cras turpis diam, euismod ut tortor nec, sollicitudin mattis arcu.\n' +
@@ -36,5 +36,7 @@ var app = new Vue({
         pluginData: {}
     }
 });
+
+// Object.keys(__vue_model).forEach(key => app.$set(app, key, __vue_model[key]));
 
 Object.keys(__vue_model).forEach(key => app[key] = __vue_model[key]);

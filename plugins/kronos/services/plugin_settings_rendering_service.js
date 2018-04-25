@@ -16,20 +16,18 @@ module.exports = function (pb) {
 
             settings = this.clone(settings);
 
-            settings.forEach(setting => {
-                Object.assign({}, {
-                    id: setting.name.split(' ').join('_'),
-                    heading: this._deriveLabel(setting.group, (setting.group || 'default')),
-                    displayName: this._deriveLabel(setting.displayName, setting.name),
-                    type: this._determineTypeOfData(setting)
-                });
-            });
+            let processed = settings.map(setting => Object.assign(setting, {
+                id: setting.name.split(' ').join('_'),
+                group: this._deriveLabel(setting.group, (setting.group || 'default')),
+                displayName: this._deriveLabel(setting.displayName, setting.name),
+                type: this._determineTypeOfData(setting)
+            }));
 
             // First sort the settings alphabetically, then by heading/group
-            settings.sort(this._sortOn('displayName'));
-            settings.sort(this._sortOn('heading'));
+            processed.sort(this._sortOn('displayName'));
+            processed.sort(this._sortOn('group'));
 
-            return this._insertGroupHeadings(settings);
+            return this._insertGroupHeadings(processed);
         }
 
         _determineTypeOfData(item) {
@@ -39,7 +37,7 @@ module.exports = function (pb) {
         _sortOn(property) {
             return function (a, b) {
                 // Forces default heading to appear at the top of the sets of grouped settings
-                if (property === 'heading' && a[property] === 'default') {
+                if (property === 'group' && a[property] === 'default') {
                     return -1;
                 } else if (a[property] < b[property]) {
                     return -1;
@@ -67,20 +65,20 @@ module.exports = function (pb) {
             let items = [];
             let previous = {};
             settings.forEach(setting => {
-                if (previous.heading !== setting.heading) {
-                    items.push(this._getHeadingObj(setting.heading))
+                if (previous.group !== setting.group) {
+                    items.push(this._getHeadingObj(setting.group));
                 }
                 items.push(setting);
                 previous = setting;
             });
-            return settings;
+            return items;
         };
 
         _deriveLabel(override = '', fallback) {
             let label = this.ls.g(override || fallback);
 
-            if (!label || label === override) {
-                label = fallback.split('_').join(' ');
+            if (!label || label === override || label === fallback) {
+                label = label.split('_').join(' ');
                 label = `${label.charAt(0).toUpperCase()}${label.slice(1)}`;
             }
 

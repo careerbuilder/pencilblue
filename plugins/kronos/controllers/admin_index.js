@@ -5,10 +5,20 @@ module.exports = function (pb) {
         async render (cb) {
             this.vueModelService.add({
                 cluster: await pb.ServerRegistration.getInstance().getClusterStatusAsync(),
-                navigation: this.AdminNavigationService.get(this.session, ['dashboard'], this.localizationService, this.site)
+                navigation: this.AdminNavigationService.get(this.session, ['dashboard'], this.localizationService, this.site),
+                pills: this.pills
             });
 
             return this.load('/admin_index', cb);
+        }
+        get pills() {
+            return [
+                {
+                    name: 'admin_home',
+                    title: `Home`,
+                    icon: 'home',
+                    href: '/kronos'
+                }];
         }
 
         static getRoutes (cb) {

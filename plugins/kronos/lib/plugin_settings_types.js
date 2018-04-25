@@ -2,7 +2,7 @@ module.exports = {
     determineType: function (value) {
         if (value === true || value === false) {
             return 'checkbox';
-        } else if (typeof(value) === 'string' && value) {
+        } else if (typeof(value) === 'string') {
             return 'text';
         } else if (!isNaN(value)) {
             return 'number';

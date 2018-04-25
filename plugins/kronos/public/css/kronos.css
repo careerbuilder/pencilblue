@@ -1,3 +1,6 @@
+html {
+    background: #E4E4E4;
+}
 #header-row {
     background: #FFFFFF;
     margin: 15px 0px;
@@ -73,8 +76,69 @@ a:hover, a:focus, a:active {
     width: 100%;
 }
 
+.btn {
+    border-radius: 0px;
+}
+.btn-default:hover {
+    background: #5D5D5D;
+    color: white;
+}
+.btn-save {
+    color: #fff;
+    background-color: #01AAD5;
+    border-color: #285e8e;
+}
+.btn-save:hover {
+    background-color: #5D5D5D;
+    border: 1px solid #5D5D5D;
+    color: #FFFFFF;
+}
+
+.alert {
+    border-radius: 0px;
+}
+.alert-clear-btn {
+    float: right;
+    cursor: pointer;
+}
+.setting-group-heading hr {
+    margin: 0 0 5px 0;
+}
+.setting-group-heading h3 {
+    color: #285e8e;
+}
+.admin-plugin-setting {
+    margin-bottom: 20px;
+}
+.admin-plugin-setting label {
+    margin-bottom: 10px;
+    display: block;
+}
+.admin-plugin-setting .setting-btn.selected-btn {
+    background-color: #e6e6e6;
+    color: #333;
+}
+.admin-plugin-setting .btn-group {
+    display: block;
+}
+.admin-plugin-setting .btn-group a:first-child {
+    margin-right: -5px;
+}
+.admin-plugin-setting .setting-btn {
+    background: #fff;
+    border: 1px solid #adadad;
+    padding: 6px 12px;
+    color: #333;
+}
+.admin-plugin-setting .text-input {
+    border: 1px #ccc solid;
+    border-radius: 0px;
+}
 .plugin-grid.panel {
     border-radius: 0px;
+}
+.plugin-grid .panel-heading {
+    background: #E7E7E7;
 }
 .plugin-grid .plugin-settings-column button{
     float:right;

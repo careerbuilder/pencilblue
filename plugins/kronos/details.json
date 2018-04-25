@@ -15,7 +15,28 @@
             }
         ]
     },
-    "settings": [],
+    "settings": [
+        {
+            "name": "random_test_setting_01",
+            "group": "Random",
+            "value": true
+        },
+        {
+            "name": "random_test_setting_02",
+            "group": "Random",
+            "value": ""
+        },
+        {
+            "name": "random_tet_setting_03",
+            "displayName": "A Text Name",
+            "value": false
+        },
+        {
+            "name": "random_test_setting_04",
+            "group": "Other",
+            "value": ""
+        }
+    ],
     "permissions": {
         "ACCESS_USER": [],
         "ACCESS_WRITER": [],

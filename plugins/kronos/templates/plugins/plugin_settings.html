@@ -1,1 +1,19 @@
-<h1> I am the plugin settings page hear me roar</h1>
+^tmp_head^
+<div class="container-fluid">
+    ^tmp_admin=shared=admin_header^
+    <div id="content-row" class="row">
+        ^tmp_admin=shared=admin_main_navigation^
+        <div class="col-sm-9">
+            <div class="well">
+                <success-message></success-message>
+                <error-message></error-message>
+                <h2>Plugin Settings</h2>
+                <hr>
+                <plugin-settings :plugin-uid="pluginUid" :settings="settings"></plugin-settings>
+            </div>
+        </div>
+    </div>
+
+    ^tmp_admin=shared=admin_footer^
+</div>
+^tmp_footer^
