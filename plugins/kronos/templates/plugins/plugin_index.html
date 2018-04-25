@@ -5,6 +5,7 @@
         ^tmp_admin=shared=admin_main_navigation^
         <div class="col-sm-9">
             <div class="well">
+                ^tmp_admin=shared=messaging_bar^
                 <plugin-grid :plugin-list="pluginData.installedPlugins" setting-state="active" list-title="Active Plugins"></plugin-grid>
                 <plugin-grid :plugin-list="pluginData.inactivePlugins" setting-state="inactive" list-title="Inactive Plugins"></plugin-grid>
             </div>

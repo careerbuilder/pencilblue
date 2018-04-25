@@ -19,6 +19,9 @@ Vue.component('search-bar', {
 });
 
 Vue.prototype.$bus = new Vue({});
+Vue.prototype.refreshPage = function () {
+    window.location.href = window.location.href;
+};
 
 const app = new Vue({
     el: '#kronosapp',

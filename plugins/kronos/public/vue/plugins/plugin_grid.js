@@ -3,13 +3,13 @@ Vue.component('plugin-installed-options', {
     methods: {
         resetSettings: function () {
             this.$http.post("/api/plugins/reset_settings/" + encodeURIComponent(this.plugin.uid))
-                .then(() => window.location.refresh())
-                .catch((error) => alert(error));
+                .then(() => this.$bus.$emit('show-success-message', 'Successfully reset settings'))
+                .catch((error) => this.$bus.$emit('show-error-message', error.data));
         },
         initializePlugin: function () {
             this.$http.post("/api/plugins/initialize/" + encodeURIComponent(this.plugin.uid))
-                .then(() => window.location.refresh())
-                .catch((error) => alert(error));
+                .then(() => this.$bus.$emit('show-success-message', 'Successfully re-initialized settings'))
+                .catch((error) => this.$bus.$emit('show-error-message', error.data));
         },
         uninstallPlugin: function () {
             this.$http.post("/api/plugins/uninstall/" + encodeURIComponent(this.plugin.uid))
@@ -17,7 +17,7 @@ Vue.component('plugin-installed-options', {
                     let jobId = result.data;
                     this.$bus.$emit('show-modal', jobId);
                 })
-                .catch((error) => alert(error));
+                .catch((error) => this.$bus.$emit('show-error-message', error.data));
         }
     },
     template: `
@@ -62,7 +62,7 @@ Vue.component('plugin-uninstalled-info-row', {
                     let jobId = result.data;
                     this.$bus.$emit('show-modal', jobId);
                 })
-                .catch((error) => alert(error));
+                .catch((error) =>  this.$bus.$emit('show-error-message', error.data));
         }
     },
     template: `
