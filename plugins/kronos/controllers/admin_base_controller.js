@@ -5,15 +5,17 @@ module.exports = function (pb) {
     class AdminBaseController extends pb.BaseController {
         async init(context, cb) {
             super.init(context, () => {
-                this.vueModelService = this.createService('VueModelRegistrationService', 'kronos');
-                this.AdminNavigationService = this.getServiceClass('AdminNavigationService', 'kronos');
-                this.pluginService = new pb.PluginService(this.getServiceContext());
-
-                this.ls.get = this.ls.g;
-                this.locale = this.ls.language;
-
+                this.extendedInit(context);
                 cb(null, true);
             });
+        }
+        extendedInit () {
+            this.vueModelService = this.createService('VueModelRegistrationService', 'kronos');
+            this.AdminNavigationService = this.getServiceClass('AdminNavigationService', 'kronos');
+            this.pluginService = new pb.PluginService(this.getServiceContext());
+
+            this.ls.get = this.ls.g;
+            this.locale = this.ls.language;
         }
 
         createService(serviceName, pluginName) {

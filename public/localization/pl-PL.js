@@ -109,7 +109,7 @@ module.exports = {
 		SET_THEME_FAILED: 'Próba ustawienia motywu [%s] nie powiodła się',
 		SET_THEME_SUCCESS: 'Aktywacja motywu [%s] przebiegła pomyślnie',
 		SAVE_PLUGIN_SETTINGS_SUCCESS: 'Zapisanie ustawień  przebiegło pomyślnie',
-		SAVE_PUGIN_SETTINGS_FAILURE: 'Wystąpił bład poczas próby zapisu ustawień',
+		SAVE_PLUGIN_SETTINGS_FAILURE: 'Wystąpił bład poczas próby zapisu ustawień',
 		SET_THEME: 'Ustaw motyw',
 		SITE_LOGO_UPLOAD_FAILURE: 'Próba wgrania nowego logo strony nie powiodła się',
 		SITE_LOGO_UPLOAD_SUCCESS: 'Aktualizacja logo strony przebiegło pomyślnie',

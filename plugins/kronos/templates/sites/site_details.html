@@ -1,0 +1,26 @@
+^tmp_head^
+<div class="container-fluid">
+    ^tmp_admin=shared=admin_header^
+    <div id="content-row" class="row">
+        ^tmp_admin=shared=admin_main_navigation^
+        <div class="col-sm-9">
+            <div class="well">
+                ^tmp_admin=shared=messaging_bar^
+
+                <h2>Site Information</h2>
+                <site-routing-form :site="site"></site-routing-form>
+            </div>
+            <div class="well">
+                <h3>Active Theme</h3>
+                <theme-picker :theme-options="themeOptions" :active-theme="activeTheme"></theme-picker>
+            </div>
+            <div class="well">
+                <h3>Supported Locales</h3>
+                <site-localization-selector :available-locales="availableLocales"></site-localization-selector>
+            </div>
+        </div>
+    </div>
+    ^tmp_admin=shared=admin_footer^
+</div>
+^tmp_footer^
+

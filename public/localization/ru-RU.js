@@ -109,7 +109,7 @@ module.exports = {
 		SET_THEME_FAILED: 'Попытка установить шаблон  [%s] как активный завершилась неудачно',
 		SET_THEME_SUCCESS: 'Шаблон [%s] активирован',
 		SAVE_PLUGIN_SETTINGS_SUCCESS: 'Настройки сохранены',
-		SAVE_PUGIN_SETTINGS_FAILURE: 'Произошла ошибка при попытке сохранить настройки',
+		SAVE_PLUGIN_SETTINGS_FAILURE: 'Произошла ошибка при попытке сохранить настройки',
 		SET_THEME: 'Применить Шаблон',
 		SITE_LOGO_UPLOAD_FAILURE: 'Не удалось загрузить новый логотип для сайта',
 		SITE_LOGO_UPLOAD_SUCCESS: 'Логотип сайта обновлен',

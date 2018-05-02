@@ -444,7 +444,11 @@ module.exports = function(pb) {
          * @param {function} next (Error) Callback function that takes a single parameter, an error if it occurred
          */
         static render (req, res, next) {
-            req.controllerInstance[req.themeRoute.handler ? req.themeRoute.handler : 'render'](function (result) {
+            let handler = req.themeRoute.handler ? req.themeRoute.handler : 'render';
+            if(!req.controllerInstance[handler]) {
+                return next(new Error(`The controller does not have a handler named ${handler}`));
+            }
+            req.controllerInstance[handler](function (result) {
                 if (util.isError(result)) {
                     return next(result);
                 }

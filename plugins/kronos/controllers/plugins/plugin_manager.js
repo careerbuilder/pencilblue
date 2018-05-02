@@ -35,7 +35,7 @@ module.exports = function (pb) {
             return [
                 {
                     name: 'home',
-                    title: this.ls.g('HOME'),
+                    title: this.ls.g('generic.HOME'),
                     icon: 'home',
                     href: '/kronos'
                 },

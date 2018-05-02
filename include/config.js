@@ -124,7 +124,7 @@ Configuration.getBaseConfig = function(multisite) {
 
         //enables/disables multiple sites in a single pencilblue instance (multitenancy)
         multisite: {
-            enabled: false,
+            enabled: true,
 
             // When multisite.enabled is true, this is the hostname that will resolve to the global namespace.
             // Only Admin routes will be activated for this hostname.
@@ -140,7 +140,7 @@ Configuration.getBaseConfig = function(multisite) {
             ],
 
             //the name of the default DB for the system
-            name: 'pencil_blue',
+            name: 'pencilblue',
 
             options: {
 
@@ -217,7 +217,7 @@ Configuration.getBaseConfig = function(multisite) {
         //unless you are developing locally with a single worker.  Memory is not
         //synced across cluster workers so be careful if this option is set to true.
         settings: {
-            use_memory: true,
+            use_memory: false,
             use_cache: false,
 
             //The timeout specifies how long in milliseconds a setting will exist
@@ -231,7 +231,7 @@ Configuration.getBaseConfig = function(multisite) {
         //environment it is ok because you will want to see the changes you make
         //after each tweak.
         templates: {
-            use_memory: true,
+            use_memory: false,
             use_cache: false,
 
             // syncSettingsAtStartup will automatically keep all plugins

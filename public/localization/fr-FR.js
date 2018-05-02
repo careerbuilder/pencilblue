@@ -109,7 +109,7 @@ module.exports = {
 		SET_THEME_FAILED: 'La tentative d\'activation du thème [%s] a échoué',
 		SET_THEME_SUCCESS: 'Activation réussie du thème [%s]',
 		SAVE_PLUGIN_SETTINGS_SUCCESS: 'Paramètres correctement enregistrés',
-		SAVE_PUGIN_SETTINGS_FAILURE: 'Une erreur est survenue lors de la tentative d\'enregistrement des paramètres',
+		SAVE_PLUGIN_SETTINGS_FAILURE: 'Une erreur est survenue lors de la tentative d\'enregistrement des paramètres',
 		SET_THEME: 'Appliquer le thème',
 		SITE_LOGO_UPLOAD_FAILURE: 'La tentative d\'envoi d\'un nouveau logo a échouée',
 		SITE_LOGO_UPLOAD_SUCCESS: 'Mise à jour du logo réussie',

@@ -1,0 +1,35 @@
+/** General Styles **/
+html {
+    background: $site-background;
+}
+
+#header-row {
+    background: #FFFFFF;
+    margin: 15px 0;
+}
+#content-row {
+    background: $site-background;
+    padding-top: 15px;
+    margin-bottom: -70px;
+}
+#footer-row {
+    background: $primary-blue;
+    padding: 15px;
+    color: #FFFFFF;
+    height: 70px; /* This varies on view port.  50 at largest, 60 at min 70 at small*/
+}
+.push {
+    height: 70px;
+}
+
+.well {
+    border-top: 5px solid $primary-blue;
+    background: #FFFFFF;
+}
+a {
+    color: $primary-blue;
+}
+a:hover, a:focus, a:active, a:visited {
+    text-decoration:  none;
+    color: $dark-gray;
+}

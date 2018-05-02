@@ -35,7 +35,7 @@ module.exports = {
         "use_cache": false
     },
     "templates": {
-        "use_memory": true,
+        "use_memory": false,
         "use_cache": false
     },
     "plugins": {

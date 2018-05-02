@@ -109,7 +109,7 @@ module.exports = {
         SET_THEME_FAILED: 'Incerca de a seta [%s] ca tema activa a esuat',
         SET_THEME_SUCCESS: 'Tema [%s] activata cu succes',
         SAVE_PLUGIN_SETTINGS_SUCCESS: 'Servari salvate cu succes',
-        SAVE_PUGIN_SETTINGS_FAILURE: 'S-a produs o eroare in tentativa de a salva setarile',
+        SAVE_PLUGIN_SETTINGS_FAILURE: 'S-a produs o eroare in tentativa de a salva setarile',
         SET_THEME: 'Aplica tema',
         SITE_LOGO_UPLOAD_FAILURE: 'Incercarea de a incarca un logo a esuat',
         SITE_LOGO_UPLOAD_SUCCESS: 'Logoul a fost incarcat cu succes',

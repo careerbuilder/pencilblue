@@ -112,7 +112,7 @@ module.exports = {
 		SET_THEME_FAILED: 'The attempt to set the active theme [%s] failed',
 		SET_THEME_SUCCESS: 'Successfully activated the theme [%s]',
 		SAVE_PLUGIN_SETTINGS_SUCCESS: 'Successfully saved settings',
-		SAVE_PUGIN_SETTINGS_FAILURE: 'An error occurred while attempting to save the settings',
+		SAVE_PLUGIN_SETTINGS_FAILURE: 'An error occurred while attempting to save the settings',
 		SET_THEME: 'Apply Theme',
 		SITE_LOGO_UPLOAD_FAILURE: 'The attempt to upload a new site logo failed',
 		SITE_LOGO_UPLOAD_SUCCESS: 'Successfully updated the site logo',

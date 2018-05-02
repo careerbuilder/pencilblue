@@ -124,7 +124,7 @@ module.exports = {
 		SET_THEME_FAILED: 'Fehler beim Aktivieren des Themas [%s].',
 		SET_THEME_SUCCESS: 'Thema erfolgreich aktiviert [%s].',
 		SAVE_PLUGIN_SETTINGS_SUCCESS: 'Einstellungen erfolgreich gespeichert.',
-		SAVE_PUGIN_SETTINGS_FAILURE: 'Fehler beim Speichern der Einstellungen.',
+		SAVE_PLUGIN_SETTINGS_FAILURE: 'Fehler beim Speichern der Einstellungen.',
 		SET_THEME: 'Thema anwenden',
 		SITE_LOGO_UPLOAD_FAILURE: 'Fehler beim Aktualisieren des Webseiten-Logos.',
 		SITE_LOGO_UPLOAD_SUCCESS: 'Das Webseiten-Logo wurde erfolgreich aktualisiert.',

@@ -112,7 +112,7 @@ module.exports = {
         SET_THEME_FAILED: 'Aktivace motivu [%s] selhala',
         SET_THEME_SUCCESS: 'Motiv [%s] aktivován',
         SAVE_PLUGIN_SETTINGS_SUCCESS: 'Nastavení úspěšně uloženo',
-        SAVE_PUGIN_SETTINGS_FAILURE: 'Při ukládání nastavení se vyskytla chyba',
+        SAVE_PLUGIN_SETTINGS_FAILURE: 'Při ukládání nastavení se vyskytla chyba',
         SET_THEME: 'Nastavit motiv',
         SITE_LOGO_UPLOAD_FAILURE: 'Nahrávání nového loga webu selhalo',
         SITE_LOGO_UPLOAD_SUCCESS: 'Nové logo webu úspěšně nahráno',

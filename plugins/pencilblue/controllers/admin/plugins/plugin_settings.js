@@ -255,7 +255,7 @@ module.exports = function(pb) {
                 if(util.isError(err) || !result) {
                     cb({
                         code: 500,
-                        content: pb.BaseController.apiResponse(pb.BaseController.API_FAILURE, self.ls.g('generic.SAVE_PUGIN_SETTINGS_FAILURE'))
+                        content: pb.BaseController.apiResponse(pb.BaseController.API_FAILURE, self.ls.g('generic.SAVE_PLUGIN_SETTINGS_FAILURE'))
                     });
                     return;
                 }

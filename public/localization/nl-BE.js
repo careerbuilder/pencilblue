@@ -109,7 +109,7 @@ module.exports = {
 		SET_THEME_FAILED: 'De poging om het thema [%\'s] te activeren is mislukt',
 		SET_THEME_SUCCESS: 'Het thema [%\'s] is succesvol geactiveerd',
 		SAVE_PLUGIN_SETTINGS_SUCCESS: 'De instellingen zijn succesvol bewaard',
-		SAVE_PUGIN_SETTINGS_FAILURE: 'Er is een probleem opgetreden tijdens het opslaan van de instellingen',
+		SAVE_PLUGIN_SETTINGS_FAILURE: 'Er is een probleem opgetreden tijdens het opslaan van de instellingen',
 		SET_THEME: 'Thema toepassen',
 		SITE_LOGO_UPLOAD_FAILURE: 'De poging om een nieuw logo te uploaden is mislukt',
 		SITE_LOGO_UPLOAD_SUCCESS: 'Het logo is met succes geüpload',

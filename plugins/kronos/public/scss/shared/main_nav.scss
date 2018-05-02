@@ -1,0 +1,59 @@
+.admin-nav-list {
+    list-style: none;
+    padding: 0;
+
+    :hover, :active,:visited, :focus,
+    :hover .admin-nav-item, :active .admin-nav-item, :visited .admin-nav-item, :focus .admin-nav-item{
+        background-color: $mid-gray;
+        color: #FFFFFF;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .admin-nav-item {
+        border: none;
+        color: $dark-gray;
+        font-size: 16px;
+        background-color: #FFFFFF;
+        padding: 0.75em;
+        display: inline-block;
+        width: 100%;
+
+        :hover, :active, :focus, :visited {
+            text-decoration: none;
+        }
+    }
+}
+
+.admin-sub-nav-list {
+    .admin-nav-item {
+        padding:.25em .25em .25em 2em;
+    }
+    .admin-nav-item {
+        :hover, :focus, :active, :visited {
+            background: $base-gray;
+            color: $dark-gray;
+        }
+    }
+    .admin-nav-item.active {
+        background: $base-gray;
+        color: $dark-gray;
+        :hover, :active, :focus, :visited {
+            background: $mid-gray;
+            color: #FFFFFF;
+        }
+    }
+}
+
+.admin-nav-item.active {
+    background: $mid-gray;
+    color: #FFFFFF;
+}
+.admin-nav-item.active:hover {
+    background: $dark-gray;
+    color: #FFFFFF;
+}
+
+#pill-nav {
+    float: right;
+}

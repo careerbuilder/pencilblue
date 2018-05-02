@@ -1,0 +1,23 @@
+#login-page {
+    img {
+        margin-bottom: 15px;
+    }
+
+    input {
+        width: 100%;
+    }
+    label {
+        margin-top: 15px;
+        width: 100%;
+    }
+    .global-error { // TODO: Replace with Error-message component all together
+        font-size: 18px;
+        font-weight: bold;
+        text-align: center;
+        display: inline-block;
+    }
+    .login-btn {
+        margin-top: 15px;
+        width: 100%;
+    }
+}

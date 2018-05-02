@@ -15,7 +15,6 @@ html {
     color: #FFFFFF;
 }
 
-
 .admin-nav-list {
     list-style: none;
     padding: 0px;
@@ -67,9 +66,16 @@ html {
 a {
     color: #01AAD5;
 }
-a:hover, a:focus, a:active {
+.simulated-link:hover, a:hover,
+.simulated-link:focus, a:focus,
+.simulated-link:active, a:active {
     text-decoration:  none;
     color: #5D5D5D;
+}
+
+.simulated-link {
+    cursor: pointer;
+    color: #01AAD5;
 }
 
 .progress-console {
@@ -108,6 +114,107 @@ a:hover, a:focus, a:active {
     opacity: 0;
 }
 
+
+.site-list-controls-row {
+    margin-bottom: 20px;
+
+}
+.btn {
+    font-size: 12px;
+}
+.btn-primary {
+    background: #01AAD5;
+    color: #FFFFFF;
+    padding: 5px 10px;
+    float: initial;
+    margin: 0 5px;
+    display: inline-block;
+}
+
+.site-search-bar-row {
+    display: flex;
+    margin-bottom: 25px;
+}
+.site-search-bar-row input {
+    flex: 1;
+    border-radius: 0px;
+    line-height: 1.42857143;
+}
+.site-search-bar-row .fa {
+    line-height: 1.85;
+}
+.btn-standard {
+    border: 1px solid #CCC;
+    font-size: 12px;
+    padding: 5px 10px;
+    color: #333;
+    white-space: nowrap;
+}
+.btn-standard:hover {
+    text-decoration: none;
+    background-color: #5D5D5D;
+    border: 1px solid #5D5D5D;
+    color: #FFFFFF;
+}
+.theme-selection-row {
+    display: flex;
+}
+.theme-selection-row .form-control {
+    border-radius: 0px;
+}
+
+.panel-heading {
+    text-transform: capitalize;
+}
+
+.site-pagination-row {
+    margin-bottom: 15px ;
+    display: flex;
+}
+.site-pagination-row .pagination-button {
+    border: 1px solid #CCC;
+    font-size: 12px;
+    padding: 5px 10px;
+    color: #333;
+    white-space: nowrap;
+}
+.site-pagination-row .pagination-button-next {
+    flex: 1;
+}
+.site-pagination-row .pagination-button-previous {
+    flex: 1;
+}
+.site-pagination-row .pagination-button-spacer {
+    flex: 10;
+}
+.site-pagination-row .pagination-button:hover {
+    text-decoration: none;
+    background-color: #5D5D5D;
+    border: 1px solid #5D5D5D;
+    color: #FFFFFF;
+}
+
+.site-routing-row  label:first-child {
+    margin-top: initial;
+}
+.site-routing-row label {
+    margin-top: 15px;
+}
+.site-routing-row  label{
+    display: block;
+}
+.site-routing-row .form-control {
+    border-radius: 0px;
+}
+.locale-selector-widget ul{
+    list-style: none;
+}
+.locale-selector-widget li {
+    display: flex;
+}
+.locale-selector-widget input[type="checkbox"] {
+    margin: 5px 5px 0 0;
+}
 
 .setting-group-heading hr {
     margin: 0 0 5px 0;
@@ -171,6 +278,9 @@ a:hover, a:focus, a:active {
 .plugin-setting-btn-group {
     float: right;
     display: flex;
+}
+.setting-column .btn-group{
+    float: right;
 }
 #pill-nav {
     float: right;

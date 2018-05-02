@@ -1,23 +1,3 @@
-
-Vue.component('search-bar', {
-    // props: ['searchTerm'],
-    data: () => ({
-    searchTerm: '',
-    message: ''
-}),
-    template: `
-			<div class="search-bar">
-				<input v-model="searchTerm" class="search-bar-input form-control" placeholder="Enter search term here">
-				<button class="search-bar-submit-btn form-control btn btn-primary" v-on:click=submit>Submit</button>
-			</div>
-		`,
-    methods: {
-    submit: function () {
-        alert(`Search for ${this.searchTerm}...`);
-    }
-}
-});
-
 Vue.prototype.$bus = new Vue({});
 Vue.prototype.refreshPage = function () {
     window.location.href = window.location.href;
@@ -34,12 +14,14 @@ const app = new Vue({
         '\n' +
         'Integer sagittis sagittis tempor. Sed aliquam arcu sit amet leo interdum mollis eu ac tellus. Morbi non velit blandit, maximus arcu eget, aliquam velit. Suspendisse lacinia, leo vel aliquet sollicitudin, lorem nibh laoreet orci, in iaculis mi dolor eget quam. Duis luctus sapien vel viverra efficitur. Nulla vitae purus at magna consequat vehicula et vitae nunc. Nullam congue, augue vel commodo congue, lorem sem aliquet eros, sed auctor sapien purus non lorem.\n' +
         '\n',
+        store: {},
         navigation: [],
         pills: [],
         pluginData: {}
     }
 });
 
-// Object.keys(__vue_model).forEach(key => app.$set(app, key, __vue_model[key]));
-
-Object.keys(__vue_model).forEach(key => app[key] = __vue_model[key]);
+Object.keys(__vue_model).forEach(key => {
+    app[key] = __vue_model[key]; // @deprecated
+    app.store[key] = __vue_model[key];
+});

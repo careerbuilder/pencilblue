@@ -37,13 +37,13 @@ module.exports = function (pb) {
            return [
                {
                    name: 'admin_home',
-                   title: `Home`,
+                   title: this.ls.get('generic.Home'),
                    icon: 'home',
                    href: '/kronos'
                },
                {
                    name: 'manage_plugins',
-                   title: `Manage Plugins`,
+                   title: this.ls.get('plugin.MANAGE_PLUGINS'),
                    icon: 'chevron-left',
                    href: '/kronos/plugins'
                },

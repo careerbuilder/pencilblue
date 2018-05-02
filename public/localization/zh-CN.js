@@ -109,7 +109,7 @@ module.exports = {
 		SET_THEME_FAILED: '尝试启用主题 [%s] 失败',
 		SET_THEME_SUCCESS: '成功启用主题 [%s]',
 		SAVE_PLUGIN_SETTINGS_SUCCESS: '成功保存设置',
-		SAVE_PUGIN_SETTINGS_FAILURE: '尝试保存设置失败',
+		SAVE_PLUGIN_SETTINGS_FAILURE: '尝试保存设置失败',
 		SET_THEME: '应用主题',
 		SITE_LOGO_UPLOAD_FAILURE: '上传新的站点标识尝试失败',
 		SITE_LOGO_UPLOAD_SUCCESS: '成功更新站点标识',

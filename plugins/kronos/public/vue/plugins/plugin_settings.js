@@ -28,7 +28,7 @@ Vue.component('plugin-settings', {
                 <a class="btn btn-default" href="/kronos/plugins">
                     <i class="fa fa-ban"></i>&nbsp;Cancel
                 </a>
-                <a class="btn btn-save" @click="submit">
+                <a class="btn btn-primary btn-save" @click="submit">
                     <i class="fa fa-save" ng-class="{'fa-save': !saving, 'fa-circle-o-notch fa-spin': saving}"></i>&nbsp;Save
                 </a>
             </div>   
