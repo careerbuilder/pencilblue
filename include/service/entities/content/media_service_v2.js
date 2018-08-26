@@ -21,6 +21,7 @@ var util = require('../../../util.js');
 var async = require('async');
 var path = require('path');
 var fs = require('fs');
+const mime = require('mime');
 
 module.exports = function (pb) {
 
@@ -128,7 +129,7 @@ module.exports = function (pb) {
                 self.provider.getStream(media.location, function (err, stream) {
                     callback(err, stream ? {
                         stream: stream,
-                        mime: media.mime || pb.RequestHandler.getMimeFromPath(media.location)
+                        mime: media.mime || mime.lookup(media.location)
                     } : null);
                 });
             }

@@ -823,4 +823,4 @@ Util.TIME = Object.freeze({
 });
 
 //exports
-module.exports = Util;
+module.exports = Object.assign({}, Util, require('lodash'));

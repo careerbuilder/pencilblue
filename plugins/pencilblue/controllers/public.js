@@ -46,6 +46,7 @@ module.exports = function PluginPublicContentControllerModule(pb) {
         var pluginPublicDir = PluginService.getActivePluginPublicDir(plugin);
         var publicRoutes = ['angular/', 'js/', 'css/', 'fonts/', 'img/', 'images/', 'localization/', 'favicon.ico', 'dist/', 'widgets/', 'version/'];
 
+        pb.log.info("hitting public controller " + this.ctx);
         //do check for valid strings otherwise serve 404
         if (!util.isString(postPluginPath) || !util.isString(pluginPublicDir)) {
             pb.log.silly('PluginPublicContentController: Invalid public path was provided. POST_PLUGIN_PATH=[%s] PLUGIN_PUBLIC_DIR=[%s] URL=[%s]', postPluginPath, pluginPublicDir, this.req.url);

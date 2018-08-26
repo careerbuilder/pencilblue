@@ -23,7 +23,6 @@ module.exports = function SetupActionControllerModule(pb) {
 
     //pb dependencies
     var util            = pb.util;
-    var CallHomeService = pb.CallHomeService;
 
     /**
      * Creates the initial admin user
@@ -114,7 +113,6 @@ module.exports = function SetupActionControllerModule(pb) {
         post.locale = self.ls.language;
 
         //get call home allowance
-        var callHome = 1 == post.call_home;
         delete post.call_home;
 
         //do setup events
@@ -139,12 +137,9 @@ module.exports = function SetupActionControllerModule(pb) {
                 pb.settings.set('system_initialized', true, callback);
             },
             function(callback) {
-                pb.settings.set('call_home', callHome, callback);
+                pb.settings.set('call_home', false, callback); // TODO: remove this
             },
             function(callback) {
-                if (callHome) {
-                    CallHomeService.callHome(CallHomeService.SYSTEM_SETUP_EVENT);
-                }
                 callback(null, null);
             }
         ];

@@ -66,7 +66,7 @@ module.exports = pb => {
         },
         ipFilterCheck: async (ctx, next) => {
             if (pb.config.server.ipFilter.enabled && ctx.req.route.path.startsWith('/admin')) {
-                const authorized = await util.promisify(pb.AdminIPFilter.requestIsAuthorized).call(pb.AdminIPFilter, ctx.req);
+                const authorized = await pb.AdminIPFilter.requestIsAuthorized(ctx.req);
                 if (!authorized) {
                     ctx.status = 403;
                     ctx.body = '403 Forbidden';

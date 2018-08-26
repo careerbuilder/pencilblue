@@ -99,7 +99,7 @@ module.exports = function SiteActivateJobModule(pb) {
                             return cb(err, null);
                         }
 
-                        pb.RequestHandler.activateSite(site);
+                        pb.SiteService.activateSite(site);
                         callback(err, result);
                     });
                 });

@@ -20,6 +20,7 @@
   "dependencies": {
     "async": "1.5.2",
     "bluebird": "^3.5.0",
+    "boring-cluster": "^3.0.0",
     "request": "^2.69.0"
   },
   "scripts": {

@@ -1,6 +1,6 @@
 const Koa = require('koa');
 const Router = require('koa-router');
-const Session = require('../koa/Session')();
+const Session = require('../koa/session')();
 const bodyParser = require('koa-bodyparser');
 
 
@@ -79,13 +79,20 @@ module.exports = function (pb) {
                         ctx.routeDescription = routeDescriptor;
                         ctx.serve404 = () => {
                             ctx.status = 404;
+                            // get controller per instance of activeTheme or PB
+                            // init it, render it, attach it to body
                             ctx.body = 'Page not found on PB';
                         };
                         ctx.serve403 = () => {
                             ctx.status = 403;
                             ctx.body = '403 Forbidden';
                         };
-                        await next();
+                        try {
+                            await next();
+                        } catch (err) {
+                            pb.log.error(err);
+                            ctx.body = JSON.stringify(err); // TODO: load 500 controller
+                        }
                     }, ...this._getMiddlewareListForRoutes());
                 });
             });

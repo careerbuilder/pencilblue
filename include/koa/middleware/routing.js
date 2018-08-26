@@ -18,6 +18,7 @@ module.exports = pb => ({
             ctx.redirect(url.format(req.url));
             return ctx.body = `Redirecting to ${redirectHost}`;
         }
+        siteObj.supportedLocales = siteObj.supportedLocales || [];
         req.siteObj = siteObj;
 
         //make sure we have a site

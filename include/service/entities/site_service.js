@@ -359,7 +359,7 @@ module.exports = function SiteServiceModule(pb) {
                 cb(new Error('Site not active'), null);
             }
             else {
-                pb.RequestHandler.activateSite(site);
+                SiteService.activateSite(site);
                 cb(err, site);
             }
         });
@@ -692,5 +692,17 @@ module.exports = function SiteServiceModule(pb) {
     pb.BaseObjectService.on(TYPE + '.' + pb.BaseObjectService.MERGE, SiteService.merge);
     pb.BaseObjectService.on(TYPE + '.' + pb.BaseObjectService.BEFORE_DELETE, SiteService.beforeDelete);
 
+    
+    SiteSerivce.activateSite = function () {
+
+    }
+
+
+    SiteService.activateSite = function (site) {
+        this.sites[site.hostname].active = true;
+    };
+    SiteService.deactivateSite = function  (site) {
+        this.sites[site.hostname].active = false;
+    };
     return SiteService;
 };
