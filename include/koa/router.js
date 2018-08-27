@@ -1,6 +1,6 @@
 const Koa = require('koa');
 const Router = require('koa-router');
-const Session = require('../koa/session')();
+const Session = require('./session')();
 const bodyParser = require('koa-bodyparser');
 
 
@@ -77,22 +77,7 @@ module.exports = function (pb) {
                     let routeDescriptor = route.descriptors[method];
                     this.router[method](routeDescriptor.path, async (ctx, next) => {
                         ctx.routeDescription = routeDescriptor;
-                        ctx.serve404 = () => {
-                            ctx.status = 404;
-                            // get controller per instance of activeTheme or PB
-                            // init it, render it, attach it to body
-                            ctx.body = 'Page not found on PB';
-                        };
-                        ctx.serve403 = () => {
-                            ctx.status = 403;
-                            ctx.body = '403 Forbidden';
-                        };
-                        try {
-                            await next();
-                        } catch (err) {
-                            pb.log.error(err);
-                            ctx.body = JSON.stringify(err); // TODO: load 500 controller
-                        }
+                       await next();
                     }, ...this._getMiddlewareListForRoutes());
                 });
             });
@@ -124,7 +109,6 @@ module.exports = function (pb) {
                     .listen(port);
 
                 pb.log.info('PencilBlue is ready!');
-                console.timeEnd("startup");
                 this.calledOnce = 1;
             }
             else {

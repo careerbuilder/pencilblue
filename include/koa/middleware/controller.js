@@ -7,9 +7,8 @@ module.exports = pb => ({
         await next();
     },
     initializeController: async (ctx, next) => {
-        const props = pb.RequestHandler.buildControllerContext(ctx);
         await new Promise((resolve, reject) => {
-            ctx.req.controllerInstance.init(props, (err) => {
+            ctx.req.controllerInstance.init(ctx, (err) => {
                 if (util.isError(err)) {
                     return reject(err)
                 }

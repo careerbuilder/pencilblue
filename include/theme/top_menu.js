@@ -22,19 +22,174 @@ var util  = require('../util.js');
 
 module.exports = function TopMenuServiceModule(pb) {
 
-    //dependencies
-    var SectionService = pb.SectionService;
+    class TopMenuService extends pb.BaseService {
+        constructor (context) {
+            super(context);
+            this.session = context.session;
+            this.settingService = pb.SettingServiceFactory.getService(this.site);
+            this.sectionService = this.createService('SectionService');
+            this.contentService = this.createService('ContentService');
 
-    /**
-     * Service for top menu navigation.
-     * NOTE: This is not for administrative pages.
-     *
-     * @module Services
-     * @submodule Theme
-     * @class TopMenuService
-     * @constructor
-     */
-    function TopMenuService(){}
+        }
+
+        async getNavItems (context) {
+            let {themeSettings, navigation, accountButtons} = await this.getTopMenu(context);
+            ({navigation, accountButtons}) = (await this.getBootstrapNav(navigation, accountButtons, options));
+            return {
+                themeSettings,
+                navigation,
+                accountButtons
+            };
+        };
+
+        /*****
+         * Actions related to getting the Account Buttons
+         * @returns {Array}
+         */
+        getAccountButtons() {
+            let contentSettings = this.contentService.getSettings();
+            let accountButtons = [];
+
+            if (contentSettings.allow_comments) {
+                if (pb.security.isAuthenticated(this.session)) {
+                    accountButtons.push(this.userAccountButton, this.rssAccountButton, this.logoutAccountButton);
+                }
+                else {
+                    accountButtons.push(this.userSignupButton, this.rssAccountButton);
+                }
+            }
+            else {
+                accountButtons.push(this.rssAccountButton);
+            }
+            return accountButtons;
+        }
+        get logoutAccountButton () {
+            return{
+                icon: 'power-off',
+                title: ls.g('generic.LOGOUT'),
+                href: '/actions/logout'
+            };
+        }
+        get userAccountButton () {
+            return {
+                icon: 'user',
+                title: ls.g('admin.ACCOUNT'),
+                href: '/user/manage_account'
+            };
+        }
+
+        get userSignupButton () {
+            return {
+                icon: 'user',
+                    title: ls.g('admin.ACCOUNT'),
+                href: '/user/sign_up'
+            };
+        }
+        get rssAccountButton () {
+            return                         {
+                icon: 'rss',
+                title: ls.g('generic.SUBSCRIBE'),
+                href: '/feed'
+            };
+        }
+
+        /****
+         * Actions releated to getting the actual navigation data structure
+         * @param context
+         * @returns {Promise<{siteLogo: *, formattedSections: *, accountButtons: Array}>}
+         */
+        async getTopMenu (context = {}) { // TODO: Determine if anything else comes in on this
+            context.currUrl = context.currUrl || null;
+
+            let siteLogo = await this._getSiteLogo();
+            let formattedSections = await this.sectionService.getFormattedSections(this.ls, context.currUrl); // TODO: remove this.ls as a param
+            let accountButtons = this.getAccountButtons();
+
+            return {
+                siteLogo, formattedSections, accountButtons
+            };
+        }
+
+        async _getSiteLogo () {
+            let logo = await this.settingService.get('site_logo');
+            return {site_logo: logo};
+        }
+
+        /****
+         * Function to format Accounts and Nav Items
+         */
+        getBootstrapNav (navigation, accountButtons, options, cb) {
+            if (util.isFunction(options)) {
+                cb = options;
+                options = {};
+            }
+
+            var ts = new pb.TemplateService(options);
+            if(pb.config.localization.nav){
+                ts.setReprocess(true);
+            }
+            ts.load('elements/top_menu/link', function(err, linkTemplate) {
+                ts.load('elements/top_menu/dropdown', function(err, dropdownTemplate) {
+                    ts.load('elements/top_menu/account_button', function(err, accountButtonTemplate) {
+
+                        var bootstrapNav = ' ';
+                        for(var i = 0; i < navigation.length; i++)
+                        {
+                            if(navigation[i].dropdown)
+                            {
+                                var subNav = ' ';
+                                for(var j = 0; j < navigation[i].children.length; j++)
+                                {
+                                    if(!navigation[i].children[j]) {
+                                        continue;
+                                    }
+
+                                    var childItem = linkTemplate;
+                                    childItem = childItem.split('^active^').join((navigation[i].children[j].active) ? 'active' : '');
+                                    childItem = childItem.split('^url^').join(navigation[i].children[j].url);
+                                    childItem = childItem.split('^new_tab^').join(navigation[i].children[j].new_tab ? '_blank' : '_self');
+                                    childItem = childItem.split('^name^').join(navigation[i].children[j].name);
+
+                                    subNav = subNav.concat(childItem);
+                                }
+
+                                var dropdown = dropdownTemplate;
+                                dropdown = dropdown.split('^navigation^').join(subNav);
+                                dropdown = dropdown.split('^active^').join((navigation[i].active) ? 'active' : '');
+                                dropdown = dropdown.split('^name^').join(navigation[i].name);
+
+                                bootstrapNav = bootstrapNav.concat(dropdown);
+                            }
+                            else
+                            {
+                                var linkItem = linkTemplate;
+                                linkItem = linkItem.split('^active^').join((navigation[i].active) ? 'active' : '');
+                                linkItem = linkItem.split('^url^').join(navigation[i].url);
+                                linkItem = linkItem.split('^new_tab^').join(navigation[i].new_tab ? '_blank' : '');
+                                linkItem = linkItem.split('^name^').join(navigation[i].name);
+
+                                bootstrapNav = bootstrapNav.concat(linkItem);
+                            }
+                        }
+
+                        var buttons = ' ';
+                        for(i = 0; i < accountButtons.length; i++)
+                        {
+                            var button = accountButtonTemplate;
+                            button = button.split('^active^').join((accountButtons[i].active) ? 'active' : '');
+                            button = button.split('^url^').join(accountButtons[i].href);
+                            button = button.split('^title^').join(accountButtons[i].title);
+                            button = button.split('^icon^').join(accountButtons[i].icon);
+
+                            buttons = buttons.concat(button);
+                        }
+
+                        cb(bootstrapNav, buttons);
+                    });
+                });
+            });
+        };
+    }
 
     /**
      * Retrieves the theme settings, navigation data structure, and account buttons.

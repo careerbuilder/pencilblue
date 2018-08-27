@@ -16,7 +16,7 @@
 */
 
 //dependencies
-var util = require('../include/util.js');
+var util = require('../../include/util.js');
 
 module.exports = function(pb) {
 
@@ -25,6 +25,7 @@ module.exports = function(pb) {
      * needs access to a posted form.
      * @class FormController
      * @extends BaseController
+     * @deprecated V 1.0
      * @constructor
      */
     function FormController(){}

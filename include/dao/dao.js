@@ -86,6 +86,12 @@ module.exports = function DAOModule(pb) {
      */
     DAO.DESC = -1;
 
+    DAO.CreateDocument = function(objectType, data) {
+        return Object.assign({}, {object_type: objectType}, data);
+    };
+    DAO.UpdateDocument = function(newData, oldData) {
+        return pb.util.merge(oldData, newData);
+    };
     /**
      * Retrieves an object by ID
      *

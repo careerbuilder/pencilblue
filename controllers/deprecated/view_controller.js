@@ -19,21 +19,22 @@
 var async = require('async');
 
 module.exports = function ViewControllerModule(pb) {
-    
+
     var util           = pb.util;
     var BaseController = pb.BaseController;
-    
+
     /**
-     * 
+     *
      * @class View Controller
      * @constructor
+     * @deprecated
      * @extends BaseController
      */
     function ViewController(){}
     util.inherits(ViewController, BaseController);
-    
+
     /**
-     * Returns the path to the view template.  Must be implemented by the 
+     * Returns the path to the view template.  Must be implemented by the
      * extending controller prototype.
      * @method getView
      * @return {String}
@@ -41,7 +42,7 @@ module.exports = function ViewControllerModule(pb) {
     ViewController.prototype.getView = function() {
         throw new Error('getView must be overriden by the extending controller prototype');
     };
-    
+
     /**
      * Called before the controller attempts to render the view
      * @method beforeTemplateLoad
@@ -50,9 +51,9 @@ module.exports = function ViewControllerModule(pb) {
     ViewController.prototype.beforeTemplateLoad = function(cb) {
         cb(/*no-op*/);
     };
-    
+
     /**
-     * Returns the path to the view template.  Must be implemented by the 
+     * Returns the path to the view template.  Must be implemented by the
      * extending controller prototype.
      * @method render
      * @param {String} view
@@ -62,27 +63,27 @@ module.exports = function ViewControllerModule(pb) {
             cb = view;
             view = null;
         }
-        
+
         var self  = this;
         var tasks = [
-            
+
             //call custom pre-load task
             util.wrapTask(this, this.beforeTemplateLoad),
-            
+
             //load the template
             function(callback) {
                 self.loadTemplate(view, callback);
             }
         ];
         async.series(tasks, function(err, results) {
-            
+
             //we know the load task will always be last so we retrieve the result for that task
             self.onRenderComplete(err, results[tasks.length - 1], cb);
         });
     };
-    
+
     /**
-     * Loads the template with the view provided by the extending controller 
+     * Loads the template with the view provided by the extending controller
      * prototype implementation.
      * @method loadTemplate
      * @param {Function} cb
@@ -90,7 +91,7 @@ module.exports = function ViewControllerModule(pb) {
     ViewController.prototype.loadTemplate = function(view, cb) {
         this.ts.load(view || this.getView(), cb);
     };
-    
+
     /**
      * Inspects the result of the controller's execution
      * prototype implementation.
@@ -103,12 +104,12 @@ module.exports = function ViewControllerModule(pb) {
         if (util.isError(err)) {
             return this.reqHandler.serveError(err);
         }
-        
+
         //all ok send back what we rendered
         cb({
             content: viewContent
         });
     };
-    
+
     return ViewController;
 };

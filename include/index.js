@@ -63,6 +63,7 @@ module.exports = function PB(config) {
     pb.CacheFactory = CacheModule(pb).CacheFactory;
     pb.cache        = pb.CacheFactory.getInstance();
 
+    pb.BaseService = require(path.join(config.docRoot, '/include/service/base_service.js'))(pb);
     //configure the DB manager
     pb.DBManager = require(config.docRoot+'/include/dao/db_manager')(pb);
     pb.dbm       = new pb.DBManager();
@@ -92,10 +93,9 @@ module.exports = function PB(config) {
     pb.BaseObjectService = require(path.join(config.docRoot, '/include/service/base_object_service.js'))(pb);
 
     //setup site service
-    pb.SiteService = require(path.join(config.docRoot, '/include/service/entities/site_service.js'))(pb);
-    pb.LocalizationService = require(path.join(config.docRoot, '/include/service/entities/localization_service.js'))(pb);
-    pb.SiteQueryService = require(path.join(config.docRoot, '/include/service/entities/site_query_service.js'))(pb);
-
+    pb.SiteService              = require(path.join(config.docRoot, '/include/service/entities/site_service.js'))(pb);
+    pb.LocalizationService      = require(path.join(config.docRoot, '/include/service/entities/localization_service.js'))(pb);
+    pb.SiteQueryService         = require(path.join(config.docRoot, '/include/service/entities/site_query_service.js'))(pb);
 
     //setup object services
     pb.SimpleLayeredService         = require(path.join(config.docRoot, '/include/service/simple_layered_service.js'))(pb);
@@ -150,9 +150,8 @@ module.exports = function PB(config) {
     pb.HttpStatus          = require('http-status-codes');
 
     //setup errors
-    pb.PBError    = require(path.join(config.docRoot, '/include/error/pb_error.js'))(pb);
-    pb.ErrorsOverTime = require(path.join(config.docRoot, '/include/error/errors_over_time.js'))(pb);
-    pb.ErrorFormatters = require(path.join(config.docRoot, '/include/error/formatters/error_formatters.js'))(pb);
+    pb.Errors              = require(path.join(config.docRoot, '/include/error/error_util.js')); // Does not need PB
+    pb.ErrorsOverTime      = require(path.join(config.docRoot, '/include/error/errors_over_time.js'))(pb);
 
     //setup localization
     pb.Localization = require(path.join(config.docRoot, '/include/localization.js'))(pb);

@@ -40,7 +40,7 @@ module.exports = function SetupViewControllerModule(pb) {
 
         pb.settings.get('system_initialized', function(err, isSetup){
             if (util.isError(err)) {
-                throw new pb.PBError("A database connection could not be established", 500); // PBError class necessary?
+                throw new Error("A database connection could not be established");
             }
 
             //when user count is 1 or higher the system has already been initialized

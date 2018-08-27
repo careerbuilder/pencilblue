@@ -58,7 +58,8 @@ module.exports = function JSONFSEntityServiceModule(pb) {
             catch(e) {
                 var error = util.format("%s: Failed to parse JSON from file: %s", this.type, key);
                 pb.log.error(error);
-                cb(new pb.PBError(error).setSource(e)); // PBError class necessary?
+                error.source = e;  // source node needed?
+                cb(error);
             }
         };
         JSONFSEntityService.super_.prototype.render.apply([this, key, handler]);
@@ -74,7 +75,7 @@ module.exports = function JSONFSEntityServiceModule(pb) {
      */
     JSONFSEntityService.prototype.set = function(key, value, cb) {
         if (!util.isObject(value) && !util.isArray(value)) {
-            cb(new pb.PBError(this.type+": Value must be an array or object: "+util.inspect(value)), null); // PBError class necessary?
+            cb(new Error(`${this.type}: Value must be an array or object: ${pb.util.inspect(value)}`));
         }
 
         try {

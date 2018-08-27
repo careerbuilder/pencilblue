@@ -92,6 +92,11 @@ module.exports = function(pb) {
         });
     };
 
+    EditPagePostController.prototype.setFormFieldValues = function(post) {
+        this.session.fieldValues = post;
+        return this.session;
+    };
+
     EditPagePostController.prototype.getRequiredParams = function() {
         return ['url', 'headline', 'page_layout', 'id'];
     };

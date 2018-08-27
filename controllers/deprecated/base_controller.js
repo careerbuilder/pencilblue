@@ -18,7 +18,7 @@
 
 //dependencies
 var url  = require('url');
-var util = require('../include/util.js');
+var util = require('../../include/util.js');
 if(process.env.NEW_RELIC_LICENSE_KEY && process.env.NEW_RELIC_APP_NAME){
     var newrelic = require('newrelic');
 }
@@ -27,89 +27,74 @@ if(process.env.NEW_RELIC_LICENSE_KEY && process.env.NEW_RELIC_APP_NAME){
 module.exports = function BaseControllerModule(pb) {
 
     // pb dependancies
-    const  SiteService = pb.SiteService;
+    var SiteService = pb.SiteService;
 
-    // TODO: figure out if we need this
-    const FORM_REFILL_PATTERN = 'if(typeof refillForm !== "undefined") {' + "\n" +
-        '$(document).ready(function(){'+ "\n" +
-        'refillForm(%s)});}';
-
-    // TODO: move this somewhere else
-    var ALERT_PATTERN = '<div class="alert %s error_success">%s<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
-
-    class BaseController{
-        async init (props) {
-            let ctx =  props.ctx; // The context object from Koa has redirects and error handlers
-
-            this.req = ctx.req;
-            this.res = ctx.res;
-
-            this.session = ctx.session;
-
-                // localization_service: ctx.req.localizationService,
-                // path_vars: ctx.params, // TODO: Remove this one
-                // pathVars: ctx.params,
-                // query: ctx.query,
-                // site: ctx.req.site,
-                // siteObj: ctx.req.siteObj,
-                // siteName: ctx.req.siteName,
-                // activeTheme: ctx.req.activeTheme || 'pencilblue',
-                // routeLocalized: !!(ctx.req.route ? ctx.req.route.localization : false)
-            this.body = ctx.req.body || {}; // These are the kv pairs of post/put params, if they exist
-            this.pathVars = ctx.params || {}; // These are the kv pairs of path vars if they exist
-            this.query = props.query || {}; // These are the kv pairs of Query Strings if they exist
-
-            this.ls = ctx.req.localizationService;
-            this.ts = this.getTemplateServiceInstance(props); // TODO: figured this out
-
-
-            // Site Data
-            this.pageName            = '';
-            this.siteObj             = props.siteObj || {hostname:pb.config.siteRoot};
-            this.site                = props.site;
-            this.siteName            = props.siteName;
-            this.hostname            = SiteService.getHostWithProtocol(self.siteObj.hostname) || pb.config.siteRoot;
-            this.activeTheme = props.activeTheme;
-
-            //build out a base service context that can be cloned and passed to any
-            //service objects
-            this.context = {
-                req: this.req,
-                session: this.session,
-                ls: this.ls,
-                ts: this.ts,
-                site: this.site,
-                hostname: this.hostname,
-                activeTheme: this.activeTheme,
-                onlyThisSite: true,
-                siteObj: this.siteObj
-            };
-
-            if(process.env.NEW_RELIC_LICENSE_KEY && process.env.NEW_RELIC_APP_NAME) {
-                newrelic.addCustomParameter('hostname', this.hostname);
-                newrelic.addCustomParameter('pathVars', JSON.stringify(this.pathVars));
-                newrelic.addCustomParameter('query', JSON.stringify(this.query));
-                newrelic.addCustomParameter('referer', this.req.headers.referer);
-                newrelic.addCustomParameter('x-forwarded-for', this.req.headers["x-forwarded-for"]);
-            }
-            //call the initSync function
-            this.initSync(props);
-        };
-
-    }
+    /**
+     * The base controller provides functions for the majority of
+     * the heavy lifing for a controller. It accepts and provides access to
+     * extending controllers for items such as the request, response, session, etc.
+     * @class BaseController
+     * @constructor
+     */
+    function BaseController(){}
 
     //constants
-// TODO: move to Api Controller
+    /**
+     * The code for a successful API call
+     * @static
+     * @property API_SUCCESS
+     * @type {Integer}
+     */
     BaseController.API_SUCCESS = 0;
-// TODO: move to api controller
+
+    /**
+     * The code for a failed API call
+     * @static
+     * @property API_FAILURE
+     * @type {Integer}
+     */
     BaseController.API_FAILURE = 1;
+
+    /**
+     * The snippet of JS code that will ensure that a form is refilled with values
+     * from the post
+     * @static
+     * @private
+     * @property FORM_REFILL_PATTERN
+     * @type {String}
+     */
+    var FORM_REFILL_PATTERN = 'if(typeof refillForm !== "undefined") {' + "\n" +
+        '$(document).ready(function(){'+ "\n" +
+            'refillForm(%s)});}';
+
+    /**
+     * The snippet of HTML that will display an alert box
+     * @static
+     * @private
+     * @property ALERT_PATTERN
+     * @type {String}
+     */
+    var ALERT_PATTERN = '<div class="alert %s error_success">%s<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
+
+    /**
+     * A mapping that converts the HTTP standard for content-type encoding and
+     * what the Buffer prototype expects
+     * @static
+     * @private
+     * @readonly
+     * @property ENCODING_MAPPING
+     * @type {Object}
+     */
+    var ENCODING_MAPPING = Object.freeze({
+        'UTF-8': 'utf8',
+        'US-ASCII': 'ascii',
+        'UTF-16LE': 'utf16le'
+    });
 
     /**
      * Responsible for initializing a controller.  Properties from the
      * RequestHandler are passed down so that the controller has complete access to
-     * a variety of request specified properties.  By default the function transfers the options over to instance 
-     * variables that can be access during rendering.  In addition, the function sets up the template service along 
-     * with a set of local flags:
+     * a variety of request specified properties.  By default the function transfers the options over to instance variables that can be access during rendering.  In addition, the function sets up the template service along with a set of local flags:
      * <ul>
      * <li>locale - The selected locale for the request (NOTE: this may not match the requested language if not supported)</li>
      * <li>error_success - An alert box if one was registered by the controller</li>
@@ -128,6 +113,133 @@ module.exports = function BaseControllerModule(pb) {
      *  @param {Object} props.query The query string variables associated with the URL for the request
      *  @param {Function} cb A callback that takes a single optional argument: cb(Error)
      */
+    BaseController.prototype.init = function(props, cb) {
+        var self = this;
+
+        /**
+         * The instance of the request handler that processed the request
+         * @property reqHandler
+         * @type {RequestHandler}
+         */
+        this.reqHandler = props.request_handler;
+
+        /**
+         * The current request object
+         * @property req
+         * @type {Request}
+         */
+        this.req = props.request;
+
+        /**
+         * The current response object
+         * @property res
+         * @type {Response}
+         */
+        this.res = props.response;
+
+        /**
+         * The session object that represents the calling entity
+         * @property session
+         * @type {object}
+         */
+        this.session = props.session;
+
+        /**
+         * The deserialized body of the request.  This field is only ever populted if the executing route specifies the
+         * "request_body" attribute and provides valid MIME types that map to a registered body parser
+         * @property body
+         * @type {object|null}
+         */
+        this.body = props.body;
+
+        /**
+         * @deprecated Use this.ls
+         * @property localizationService
+         * @type {Localization}
+         */
+        this.localizationService = props.localization_service;
+
+        /**
+         * @property ls
+         * @type {Localization}
+         */
+        this.ls = props.localization_service;
+
+        /**
+         * The hash of key/value pairs that represent the variables passed in the route path
+         * @property pathVars
+         * @type {object}
+         */
+        this.pathVars = props.pathVars;
+
+        /**
+         * The hash of key/value pairs that represent the variables passed as query string parameters
+         * @property query
+         * @type {object}
+         */
+        this.query = props.query;
+
+        /**
+         * The title of the view to be rendered, if there is a view
+         * @property pageName
+         * @type {string}
+         */
+        this.pageName            = '';
+        this.siteObj             = props.siteObj || {hostname:pb.config.siteRoot};
+        this.site                = props.site;
+        this.siteName            = props.siteName;
+        this.hostname            = SiteService.getHostWithProtocol(self.siteObj.hostname) || pb.config.siteRoot;
+
+        /**
+         * The referring URL
+         * @deprecated
+         * @property referer
+         * @type {string}
+         */
+        this.referer = this.req.headers.referer;
+
+        /**
+         * @property ts
+         * @type {TemplateService}
+         */
+        this.ts = this.getTemplateServiceInstance(props);
+
+        /**
+         * @property activeTheme
+         * @type {String}
+         */
+        this.activeTheme = props.activeTheme;
+
+        //build out a base service context that can be cloned and passed to any
+        //service objects
+        /**
+         * @property context
+         * @type {{req: Request, session: object, ls: Localization, ts: TemplateService, site: string, hostname: string, activeTheme: string, onlyThisSite: boolean, siteObj: object}}
+         */
+        this.context = {
+            req: this.req,
+            session: this.session,
+            ls: this.ls,
+            ts: this.ts,
+            site: this.site,
+            hostname: this.hostname,
+            activeTheme: this.activeTheme,
+            onlyThisSite: true,
+            siteObj: this.siteObj
+        };
+
+        if(process.env.NEW_RELIC_LICENSE_KEY && process.env.NEW_RELIC_APP_NAME) {
+            newrelic.addCustomParameter('hostname', this.hostname);
+            newrelic.addCustomParameter('pathVars', JSON.stringify(this.pathVars));
+            newrelic.addCustomParameter('query', JSON.stringify(this.query));
+            newrelic.addCustomParameter('referer', this.referer);
+            newrelic.addCustomParameter('x-forwarded-for', this.req.headers["x-forwarded-for"]);
+        }
+        //call the initSync function
+        this.initSync(props);
+
+        cb();
+    };
 
     /**
      * Provides a synchronous function means to initialize a controller.  It is

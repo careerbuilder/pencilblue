@@ -12,7 +12,7 @@ describe('Router', function() {
     beforeEach(function() {
 
         //ensures a new class prototype so the static methods can be tested easily
-        this.pb.Router = require('../../../include/http/router')(this.pb);
+        this.pb.Router = require('../../../include/koa/router')(this.pb);
     });
 
     var i = 0;

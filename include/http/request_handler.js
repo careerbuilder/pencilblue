@@ -369,32 +369,6 @@ module.exports = function RequestHandlerModule(pb) {
             });
         }
 
-        /**
-             * Builds out the context that is passed to a controller
-             * @static
-             * @method buildControllerContext
-             * @param {Request} req
-             * @returns {Object}
-             */
-        // TODO: migrate this somewhere else other than here
-        static buildControllerContext(ctx) {
-            return {
-                ctx,
-                request: ctx.req,
-                response: ctx.res,
-                session: ctx.session,
-                localization_service: ctx.req.localizationService,
-                path_vars: ctx.params, // TODO: Remove this one
-                pathVars: ctx.params,
-                query: ctx.query,
-                body: ctx.req.body,
-                site: ctx.req.site,
-                siteObj: ctx.req.siteObj,
-                siteName: ctx.req.siteName,
-                activeTheme: ctx.req.activeTheme || 'pencilblue',
-                routeLocalized: !!(ctx.req.route ? ctx.req.route.localization : false)
-            };
-        }
     }
 
     // TODO: Migrate somewhere else other than here

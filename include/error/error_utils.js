@@ -17,7 +17,7 @@
 'use strict';
 
 //dependencies
-var HttpStatusCodes = require('http-status-codes');
+const HttpStatusCodes = require('http-status-codes');
 
 /**
  * Provides convenience functions to create errors for specific conditions
@@ -69,7 +69,7 @@ class ErrorUtils {
      */
     static badRequest (options) {
         options = options || {};
-        var err =  ErrorUtils.custom(options.message, HttpStatusCodes.BAD_REQUEST);
+        let err =  ErrorUtils.custom(options.message, HttpStatusCodes.BAD_REQUEST);
         err.validationErrors = options.validationErrors;
         return err;
     }
