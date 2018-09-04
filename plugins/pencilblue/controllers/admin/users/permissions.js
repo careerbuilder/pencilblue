@@ -31,7 +31,7 @@ module.exports = function(pb) {
         var self = this;
 
         //setup angular
-        var roleDNMap   = pb.security.getRoleToDisplayNameMap(this.ls);
+        var roleDNMap   = pb.SecurityService.getRoleToDisplayNameMap(this.ls);
         var roles       = Object.keys(roleDNMap);
         var roleDNs     = Object.keys(util.invertHash(roleDNMap));
         var map         = {};

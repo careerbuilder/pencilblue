@@ -54,7 +54,7 @@ module.exports = function(pb) {
 
       var where = pb.DAO.getIdWhere(self.session.authentication.user[pb.DAO.getIdField()]);
       if(!self.session.authentication.reset_password) {
-        where.password = pb.security.encrypt(post.current_password);
+        where.password = pb.SecurityService.encrypt(post.current_password);
       }
       delete post.current_password;
 

@@ -35,9 +35,9 @@ module.exports = function (pb) {
      * @type {Array}
      */
     var SITE_SPECIFIC_USERS = [
-        pb.security.ACCESS_EDITOR,
-        pb.security.ACCESS_WRITER,
-        pb.security.ACCESS_USER
+        pb.SecurityService.ACCESS_EDITOR,
+        pb.SecurityService.ACCESS_WRITER,
+        pb.SecurityService.ACCESS_USER
     ];
 
     /**

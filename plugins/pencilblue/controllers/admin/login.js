@@ -38,11 +38,11 @@ module.exports = function LoginViewControllerModule(pb) {
     LoginViewController.prototype.render = function(cb) {
 
 
-        if(pb.security.isAuthorized(this.session, {authenticated: true, admin_level: pb.SecurityService.ACCESS_WRITER})) {
+        if(pb.SecurityService.isAuthorized(this.session, {authenticated: true, admin_level: pb.SecurityService.ACCESS_WRITER})) {
             this.redirect('/admin', cb);
             return;
         }
-        else if(pb.security.isAuthenticated(this.session)) {
+        else if(pb.SecurityService.isAuthenticated(this.session)) {
             this.redirect('/', cb);
             return;
         }

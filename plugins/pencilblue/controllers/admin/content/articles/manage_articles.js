@@ -33,7 +33,7 @@ module.exports = function(pb) {
 
     ManageArticles.prototype.render = function(cb) {
         var self = this;
-        if(!pb.security.isAuthorized(this.session, {logged_in: true, admin_level: pb.SecurityService.ACCESS_EDITOR})) {
+        if(!pb.SecurityService.isAuthorized(this.session, {logged_in: true, admin_level: pb.SecurityService.ACCESS_EDITOR})) {
             where.author = this.session.authentication.user_id;
         }
 

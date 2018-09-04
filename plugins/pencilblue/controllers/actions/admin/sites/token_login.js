@@ -38,7 +38,7 @@ module.exports = function TokenLoginControllerModule(pb) {
             onlyThisSite: false
         };
         var callback = this.query.callback;
-        pb.security.authenticateSession(this.session, this.query.token, new pb.TokenAuthentication(options), function(err, user) {
+        pb.SecurityService.authenticateSession(this.session, this.query.token, new pb.TokenAuthentication(options), function(err, user) {
 
             if(util.isError(err)) {
                 return cb({

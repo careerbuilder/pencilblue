@@ -443,7 +443,7 @@ module.exports = function(pb) {
     ContentViewLoader.prototype.renderComments = function(content, ts, cb) {
         var self           = this;
         var commentingUser = null;
-        if(pb.security.isAuthenticated(this.session)) {
+        if(pb.SecurityService.isAuthenticated(this.session)) {
             commentingUser = this.commentService.getCommentingUser(this.session.authentication.user);
         }
 

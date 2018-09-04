@@ -16,7 +16,7 @@
  */
 
 //dependencies
-var util = require('./util.js');
+var util = require('../../util.js');
 
 module.exports = function AdminNavigationModule(pb) {
 
@@ -605,7 +605,7 @@ module.exports = function AdminNavigationModule(pb) {
         for (var i = 0; i < adminNavigation.length; i++) {
             if (typeof adminNavigation[i].access !== 'undefined') {
 
-                if (!pb.security.isAuthorized(session, {admin_level: adminNavigation[i].access})) {
+                if (!pb.SecurityService.isAuthorized(session, {admin_level: adminNavigation[i].access})) {
                     adminNavigation.splice(i, 1);
                     i--;
                     continue;
@@ -627,7 +627,7 @@ module.exports = function AdminNavigationModule(pb) {
 
                         if (typeof adminNavigation[i].children[j].access !== 'undefined') {
 
-                            if (!pb.security.isAuthorized(session, {admin_level: adminNavigation[i].children[j].access})) {
+                            if (!pb.SecurityService.isAuthorized(session, {admin_level: adminNavigation[i].children[j].access})) {
                                 adminNavigation[i].children.splice(j, 1);
                                 j--;
                                 continue;

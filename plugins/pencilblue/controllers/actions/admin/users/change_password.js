@@ -68,7 +68,7 @@ module.exports = function ChangePasswordModule(pb) {
                     return;
                 }
 
-                if(user.password !== pb.security.encrypt(post.current_password)) {
+                if(user.password !== pb.SecurityService.encrypt(post.current_password)) {
                     cb({
                         code: 400,
                         content: pb.BaseController.apiResponse(pb.BaseController.API_FAILURE, self.ls.g('users.INVALID_PASSWORD'))
@@ -76,7 +76,7 @@ module.exports = function ChangePasswordModule(pb) {
                     return;
                 }
 
-                user.password = pb.security.encrypt(post.new_password);
+                user.password = pb.SecurityService.encrypt(post.new_password);
                 pb.DocumentCreator.update(post, user);
                 delete user.new_password;
                 delete user.current_password;

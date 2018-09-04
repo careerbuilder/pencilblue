@@ -18,92 +18,90 @@
 //dependencies
 const cluster = require('cluster');
 const winston = require('winston');
-const util    = require('../util.js');
 let newrelic = null;
 
 if(process.env.NEW_RELIC_LICENSE_KEY && process.env.NEW_RELIC_APP_NAME){
   newrelic = require('newrelic');
 }
 
-function configureFileTransport(config) {
-    //when a log file path is provided log to a file
-    if (util.isString(config.logging.file)) {
 
-        //ensure the directory structure exists
-        util.mkdirsSync(config.logging.file, true, util.cb);
 
-        //add the transport
-        var fileTransport = new (winston.transports.File)({ filename: config.logging.file, level: config.logging.level, timestamp: true });
-        config.logging.transports.push(fileTransport);
-    }
-}
+module.exports = function LogFactory(pb){
 
-function getConsoleTransport(config) {
-    return new (winston.transports.Console)({
-        level: config.logging.level,
-        timestamp: true,
-        label: cluster.worker ? cluster.worker.id : 'M'
-    });
-}
+    function configureFileTransport(config) {
+        //when a log file path is provided log to a file
+        if (pb.util.isString(config.logging.file)) {
 
-function getLogger(config) {
-    return new (winston.Logger)({
-        transports: config.logging.transports,
-        level: config.logging.level,
-        padLevels: false
-    })
-}
+            //ensure the directory structure exists
+            pb.util.mkdirsSync(config.logging.file, true);
 
-module.exports = function LogFactory(config){
-    //verify that we have a valid logging configuration provided
-    if (!util.isObject(config.logging)) {
-        config.logging = {};
-    }
-    if (!util.isString(config.logging.level)) {
-        config.logging.level = "info";
-    }
-    if (!util.isArray(config.logging.transports)) {
-        //initialize transports with console by default
-        config.logging.transports = [getConsoleTransport(config)];
-        configureFileTransport(config);
-    }
-
-    const logger = getLogger(config);
-
-    /**
-     * Determines if the root log level is set to debug or silly
-     * @method isDebug
-     * @return {Boolean}
-     */
-    logger.isDebug = function(){
-		return logger.levels[logger.level] >= logger.levels.debug;
-	};
-
-    /**
-     * Determines if the root log level is set to silly
-     * @method isSilly
-     * @return {Boolean}
-     */
-    logger.isSilly = function(){
-		return logger.levels[logger.level] >= logger.levels.silly;
-	};
-
-    logger.setTransactionName = function(routeName) {
-          if (newrelic) {
-              newrelic.setTransactionName(routeName)
-          }
-    };
-
-    // wrap log.error to notify newrelic
-    let logError = logger.error;
-    logger.error = function(msg) {
-        if (newrelic) {
-            newrelic.noticeError(msg)
+            //add the transport
+            let fileTransport = new (winston.transports.File)(getFileTransportContext());
+            config.logging.transports.push(fileTransport);
         }
-        logError.apply(logger, arguments)
     }
+
+    function getConsoleTransport(config) {
+        return new (winston.transports.Console)({
+            level: config.logging.level,
+            timestamp: true,
+            label: cluster.worker ? cluster.worker.id : 'M'
+        });
+    }
+
+    function getFileTransportContext(config) {
+        return {filename: config.logging.file, level: config.logging.level, timestamp: true};
+    }
+    function getLoggingContext (config) {
+        return {
+            transports: config.logging.transports,
+            level: config.logging.level,
+            padLevels: false
+        }
+    }
+
+    function setupLoggingContext () {
+        //verify that we have a valid logging configuration provided
+        pb.config.logging = pb.config.logging || {};
+        if (!pb.util.isString(pb.config.logging.level)) {
+            pb.config.logging.level = 'info';
+        }
+        if (!pb.util.isArray(pb.config.logging.transports)) {
+            //initialize transports with console by default
+            pb.config.logging.transports = [getConsoleTransport(config)];
+            configureFileTransport(config);
+        }
+    }
+
+
+
+    class PencilBlueLogger extends winston.Logger {
+        constructor(context) {
+            super(context);
+        }
+
+        isDebug () {
+            return this.levels[this.level] >= this.levels.debug;
+        }
+        isSilly () {
+            return this.levels[this.level] >= this.levels.silly;
+        }
+        
+        setTransactionName (routeName) {
+            newrelic ? newrelic.setTransactionName(routeName) : '';
+        }
+
+        error (message) {
+            newrelic ? newrelic.noticeError(message) : '';
+            super.error(message);
+        }
+    }
+
+    setupLoggingContext();
+    const logger = new PencilBlueLogger(getLoggingContext(config));
 
     //return the configured logger instance
-    logger.info('SystemStartup: Log Level is: '+config.logging.level);
+    logger.info(`SystemStartup: Log Level is: ${pb.config.logging.level}`);
     return logger;
 };
+

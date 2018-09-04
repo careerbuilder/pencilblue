@@ -35,7 +35,7 @@ module.exports = function NewSiteActionModule(pb) {
             });
         }
 
-        if(!pb.security.isAuthorized(self.session, {admin_level: self.body.admin})) {
+        if(!pb.SecurityService.isAuthorized(self.session, {admin_level: self.body.admin})) {
             return cb({
                 code: 400,
                 content: pb.BaseController.apiResponse(pb.BaseController.API_FAILURE, self.ls.g('generic.INSUFFICIENT_CREDENTIALS'))

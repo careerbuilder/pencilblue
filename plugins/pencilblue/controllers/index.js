@@ -312,7 +312,7 @@ module.exports = function IndexModule(pb) {
     Index.prototype.renderComments = function(content, ts, cb) {
         var self           = this;
         var commentingUser = null;
-        if(pb.security.isAuthenticated(this.session)) {
+        if(pb.SecurityService.isAuthenticated(this.session)) {
             commentingUser = self.commentService.getCommentingUser(this.session.authentication.user);
         }
 

@@ -81,7 +81,7 @@ module.exports = function ServerErrorControllerModule(pb) {
               {
                 navigation: navigation,
                 contentSettings: contentSettings,
-                loggedIn: pb.security.isAuthenticated(self.session),
+                loggedIn: pb.SecurityService.isAuthenticated(self.session),
                 accountButtons: accountButtons
               }));
 

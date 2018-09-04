@@ -696,7 +696,7 @@ module.exports = function PluginServiceModule(pb) {
      */
     PluginService.getPermissionsForRole = function(role) {
         if (!isNaN(role)) {
-            role = pb.security.getRoleName(role);
+            role = pb.SecurityService.getRoleName(role);
         }
 
         var perms = {};

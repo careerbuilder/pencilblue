@@ -36,23 +36,18 @@ module.exports = function PB(config) {
     }
 
     //define what will become the global entry point into the server api.
-    var pb = {};
+    const pb = {};
 
     //make the configuration available
     pb.config = config;
 
     //setup utils
     pb.util    = require(path.join(config.docRoot, '/include/util.js'));
-    Object.defineProperty(pb, 'utils', {
-        get: function() {
-            pb.log.warn('PencilBlue: pb.utils is deprecated.  Use pb.util instead');
-            return pb.util;
-        }
-    });
 
     //initialize logging
-    pb.log    = require(path.join(config.docRoot, '/include/utils/logging.js'))(config);
-    pb.AsyncEventEmitter = require(path.join(config.docRoot, '/include/utils/async_event_emitter.js'))(pb);
+    pb.log    = require(path.join(config.docRoot, '/include/utils/logging.js'))(pb);
+    pb.ContextLogger = require(path.join(config.docRoot, '/include/utils/context_logger.js'))(pb);
+    pb.AsyncEventEmitter = require(path.join(config.docRoot, '/deprecated/async_event_emitter.js'))(pb); // TODO: remove
 
     //setup the System instance
     pb.System = require(path.join(config.docRoot, 'include/system/system.js'));
@@ -114,8 +109,7 @@ module.exports = function PB(config) {
     pb.TemplateValue   = TemplateModule.TemplateValue;
 
     //setup security
-    pb.SecurityService                = require(path.join(config.docRoot, '/include/access_management.js'))(pb);
-    pb.security                       = pb.SecurityService;
+    pb.SecurityService                = require(path.join(config.docRoot, '/include/security/security_service.js'))(pb);
     var Authentication                = require(path.join(config.docRoot, '/include/security/authentication'))(pb);
     pb.UsernamePasswordAuthentication = Authentication.UsernamePasswordAuthentication;
     pb.FormAuthentication             = Authentication.FormAuthentication;
@@ -124,29 +118,18 @@ module.exports = function PB(config) {
 
     //setup user service
     pb.UserService       = require(path.join(config.docRoot, '/include/service/entities/user_service.js'))(pb);
-    Object.defineProperty(pb, 'users', {
-      get: function() {
-        pb.log.warn('PencilBlue: pb.users is deprecated.  Use new pb.UserService(context) instead');
-        return new pb.UserService();
-      }
-    });
 
     //setup request handling
-    var BodyParsers        = require(path.join(config.docRoot, 'include/http/parsers'))(pb);
-    pb.BaseBodyParser      = BodyParsers.BaseBodyParser;
-    pb.JsonBodyParser      = BodyParsers.JsonBodyParser;
-    pb.FormBodyParser      = BodyParsers.FormBodyParser;
     pb.BaseController      = require(path.join(config.docRoot, '/controllers/base_controller.js'))(pb);
     pb.BaseApiController   = require(path.join(config.docRoot, '/controllers/api/base_api_controller.js'))(pb);
     pb.BaseAdminController = require(path.join(config.docRoot, '/controllers/admin/base_admin_controller.js'))(pb);
-    pb.ViewController      = require(path.join(config.docRoot, '/controllers/view_controller.js'))(pb);
-    pb.FormController      = require(path.join(config.docRoot, '/controllers/form_controller.js'))(pb);
-    pb.DeleteController    = require(path.join(config.docRoot, '/controllers/delete_controller.js'))(pb);
+    pb.ViewController      = require(path.join(config.docRoot, '/controllers/deprecated/view_controller.js'))(pb); // TODO: remove
+    pb.FormController      = require(path.join(config.docRoot, '/controllers/deprecated/form_controller.js'))(pb); // TODO: Remove
     pb.ApiActionController = require(path.join(config.docRoot, '/controllers/api/api_action_controller.js'))(pb);
     pb.ErrorViewController = require(path.join(config.docRoot, '/controllers/error_controller.js'))(pb);
-    pb.RequestHandler      = require(path.join(config.docRoot, '/include/http/request_handler.js'))(pb);
-    pb.Middleware          = require(path.join(config.docRoot, '/include/http/middleware'))(pb);
-    pb.Router              = require(path.join(config.docRoot, '/include/http/router.js'))(pb);
+    pb.RequestHandler      = require(path.join(config.docRoot, '/include/deprecated/request_handler.js'))(pb); // TODO: Remove
+    pb.Middleware          = require(path.join(config.docRoot, '/include/koa/middleware'))(pb);
+    pb.Router              = require(path.join(config.docRoot, '/include/koa/router.js'))(pb);
     pb.HttpStatus          = require('http-status-codes');
 
     //setup errors
@@ -191,21 +174,11 @@ module.exports = function PB(config) {
     pb.EmailService = require(path.join(config.docRoot, '/include/email'))(pb);
 
     //system requires
-    pb.DocumentCreator = require(config.docRoot+'/include/model/create_document.js')(pb);	// Document creation
+    pb.DocumentCreator = require(config.docRoot+'/include/deprecated/create_document.js')(pb);	//TODO: Remove
     pb.ContentService  = require(path.join(config.docRoot, '/include/content'))(pb); // Content settings and functions
-    Object.defineProperty(pb, 'content', {
-        get: function() {
-            pb.log.warn('PencilBlue: pb.content is deprecated.  Use pb.ContentService instead');
-            return new pb.ContentService();
-        }
-    });
-    pb.ClientJs = require(config.docRoot+'/include/client_js')(pb); // Client JS
-    Object.defineProperty(pb, 'js', {
-        get: function() {
-            pb.log.warn('PencilBlue: pb.js is deprecated.  Use pb.ClientJs instead');
-            return pb.ClientJS;
-        }
-    });
+
+    pb.ClientJs = require(config.docRoot+'/include/theme/client_js')(pb); // Client JS
+
     pb.AdminNavigation    = require(path.join(config.docRoot, '/include/admin_navigation'))(pb);			// Admin Navigation
     pb.AdminSubnavService = require(path.join(config.docRoot, '/include/service/admin/admin_subnav_service.js'))(pb);
     pb.AnalyticsManager   = require(path.join(config.docRoot, '/include/system/analytics_manager.js'))(pb);
@@ -216,12 +189,6 @@ module.exports = function PB(config) {
 
     //create plugin service
     pb.PluginService = require(path.join(config.docRoot, '/include/service/entities/plugin_service.js'))(pb);
-    Object.defineProperty(pb, 'plugins', {
-        get: function() {
-            pb.log.warn('PencilBlue: pb.plugins is deprecated.  Use new pb.PluginService instead');
-            return new pb.PluginService();
-        }
-    });
 
     //create plugin setting service
     pb.PluginSettingService = require(path.join(config.docRoot, '/include/service/entities/plugin_setting_service.js'))(pb);

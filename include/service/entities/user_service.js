@@ -720,7 +720,7 @@ module.exports = function(pb) {
         obj.photo = dto.photo;
         obj.position = dto.position;
         if (context.isCreate && dto.password) {
-            obj.password = pb.security.encrypt(dto.password);
+            obj.password = pb.SecurityService.encrypt(dto.password);
         }
         cb(null);
     };

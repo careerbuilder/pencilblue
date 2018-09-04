@@ -18,9 +18,11 @@
 
 //dependencies
 var crypto = require('crypto');
-var util   = require('./util.js');
+var util   = require('../util.js');
 
 module.exports = function(pb) {
+
+    const PASSWORD_CHARS = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '!', '@', '#', '$', '%', '^', '&', '*', '?'];
 
     /**
      * Service for managing user access
@@ -30,7 +32,15 @@ module.exports = function(pb) {
      * @class SecurityService
      * @constructor
      */
-    function SecurityService(){}
+    class SecurityService extends pb.BaseService {
+
+        static getRoleNames (ls) {
+            // Returns the constant name of an access level number
+            let map = SecurityService.getRoleToDisplayNameMap(ls);
+            return pb.util.hashToArray(map);
+        };
+
+    }
 
     /**
      *
@@ -76,7 +86,6 @@ module.exports = function(pb) {
      * @type {Integer}
      */
     SecurityService.ACCESS_ADMINISTRATOR = 4;
-
 
     /**
      *
@@ -133,53 +142,17 @@ module.exports = function(pb) {
      * @private
      * @static
      * @readonly
-     * @property PASSWORD_CHARS
-     * @type {Array}
-     */
-    var PASSWORD_CHARS = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '!', '@', '#', '$', '%', '^', '&', '*', '?'];
-
-    /**
-     *
-     * @private
-     * @static
-     * @readonly
      * @property ROLE_VAL_TO_NAME
      * @type {Array}
      */
-    var ROLE_VAL_TO_NAME = SecurityService.SYSTEM_ROLES.reduce(function(prev, curr) {
+    const ROLE_VAL_TO_NAME = SecurityService.SYSTEM_ROLES.reduce((prev, curr) => {
         prev[curr.value] = curr.key;
         return prev;
     }, {});
 
-    /**
-     *
-     * @static
-     * @readonly
-     * @property ACCESS_
-     * @type {Integer}
-     */
+
     SecurityService.AUTHENTICATED = 'authenticated';
-
-    /**
-     *
-     * @static
-     * @readonly
-     * @property ACCESS_
-     * @type {Integer}
-     */
     SecurityService.ADMIN_LEVEL = 'admin_level';
-
-    /**
-     * Retrieves the localized names of access levels as an array
-     *
-     * @method getRoleNames
-     * @param {Localization} ls The localization service
-     * @return {Array}
-     */
-    SecurityService.getRoleNames = function(ls) {
-        var map = SecurityService.getRoleToDisplayNameMap(ls);
-        return util.hashToArray(map);
-    };
 
     /**
      * Provides a hash of the default roles to their translated display name
@@ -199,19 +172,7 @@ module.exports = function(pb) {
         }, {});
     };
 
-    /**
-     * Returns the constant name of an access level number
-     *
-     * @method getRoleName
-     * @param {Number} accessLevel
-     */
-    SecurityService.getRoleName = function(accessLevel) {
-        var val = ROLE_VAL_TO_NAME[accessLevel];
-        if (!val) {
-            throw new Error(util.format("An invalid access level [%s] was provided", accessLevel));
-        }
-        return val;
-    };
+
 
     /**
      * Authenticates a session

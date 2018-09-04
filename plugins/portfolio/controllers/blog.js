@@ -117,7 +117,7 @@ module.exports = function BlogModule(pb) {
 
                                 self.ts.registerLocal('angular', function(flag, cb) {
 
-                                    var loggedIn       = pb.security.isAuthenticated(self.session);
+                                    var loggedIn       = pb.SecurityService.isAuthenticated(self.session);
                                     var commentingUser = loggedIn ? self.commentService.getCommentingUser(self.session.authentication.user) : null;
                                     var heroImage      = null;
                                     if(data.content[0]) {
@@ -142,7 +142,7 @@ module.exports = function BlogModule(pb) {
                                         throw err;
                                     }
 
-                                    //var loggedIn = pb.security.isAuthenticated(self.session);
+                                    //var loggedIn = pb.SecurityService.isAuthenticated(self.session);
                                     //var commentingUser = loggedIn ? self.commentService.getCommentingUser(self.session.authentication.user) : null;
                                     //var heroImage = null;
                                     //if(data.content[0]) {
@@ -332,7 +332,7 @@ module.exports = function BlogModule(pb) {
     Blog.prototype.renderComments = function(content, ts, cb) {
         var self           = this;
         var commentingUser = null;
-        if(pb.security.isAuthenticated(this.session)) {
+        if(pb.SecurityService.isAuthenticated(this.session)) {
             commentingUser = this.commentService.getCommentingUser(this.session.authentication.user);
         }
 

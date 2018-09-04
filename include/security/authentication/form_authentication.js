@@ -7,7 +7,7 @@ module.exports = (pb) => {
                 throw new pb.Errors.badRequest({message:`FormAuthentication: The postObj parameter must be an object: ${post}`});
             }
 
-            post.password = post.password ? pb.security.encrypt(post.password) : '';
+            post.password = post.password ? pb.SecurityService.encrypt(post.password) : '';
             super.authenticate(post);
         }
     }

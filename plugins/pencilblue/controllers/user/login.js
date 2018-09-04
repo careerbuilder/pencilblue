@@ -32,7 +32,7 @@ module.exports = function LoginViewControllerModule(pb) {
     util.inherits(LoginViewController, ViewController);
 
     LoginViewController.prototype.login = function(cb) {
-        if(pb.security.isAuthenticated(this.session)) {
+        if(pb.SecurityService.isAuthenticated(this.session)) {
             return this.redirect('/', cb);
         }
 

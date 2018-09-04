@@ -262,7 +262,7 @@ module.exports = function(pb) {
                             article.media_body_style = '';
                         }
 
-                        article.author_name     = pb.users.getFormattedName(authors[j]);
+                        article.author_name     = pb.UserService.getFormattedName(authors[j]);
                         article.author_position = (authors[j].position && contentSettings.display_author_position) ? authors[j].position : '';
                         break;
                     }
@@ -403,7 +403,7 @@ module.exports = function(pb) {
             comment.timestamp      = pb.ContentService.getTimestampTextFromSettings(comment.created, contentSettings);
 
             if (commenter) {
-                comment.commenter_name = pb.users.getFormattedName(commenter);
+                comment.commenter_name = pb.UserService.getFormattedName(commenter);
                 if(commenter.photo) {
                     comment.commenter_photo = commenter.photo;
                 }

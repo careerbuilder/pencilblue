@@ -57,7 +57,7 @@ module.exports = function(pb) {
         var post = this.body || {};
 
 
-        if(!pb.security.isAuthorized(self.session, {admin_level: post.admin})) {
+        if(!pb.SecurityService.isAuthorized(self.session, {admin_level: post.admin})) {
             return cb({
                 code: 400,
                 content: pb.BaseController.apiResponse(pb.BaseController.API_FAILURE, self.ls.g('generic.INSUFFICIENT_CREDENTIALS'))

@@ -23,6 +23,7 @@ module.exports = function(pb) {
 
     /**
      * @static
+     * @deprecated
      * @class AsyncEventEmitter
      */
     function AsyncEventEmitter(){}

@@ -31,7 +31,7 @@ module.exports = function(pb) {
             return {
                 navigation: this.navItems.navigation,
                 contentSettings: this.contentSettings,
-                loggedIn: pb.security.isAuthenticated(this.session),
+                loggedIn: pb.SecurityService.isAuthenticated(this.session),
                 accountButtons: this.navItems.accountButtons
             };
         }

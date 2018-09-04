@@ -198,7 +198,7 @@ module.exports = function WPXMLParseServiceModule(pb) {
                         return callback(null, existingUser);
                     }
 
-                    var generatedPassword = pb.security.generatePassword(8);
+                    var generatedPassword = pb.SecurityService.generatePassword(8);
 
                     users[index].email = 'user_' + util.uniqueId() + '@placeholder.com';
                     users[index].admin = pb.SecurityService.ACCESS_WRITER;

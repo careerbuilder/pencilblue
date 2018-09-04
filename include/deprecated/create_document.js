@@ -85,7 +85,7 @@ module.exports = function DocumentCreatorModule(pb) {
         }
 
         if (post.password) {
-            post.password = pb.security.encrypt(post.password);
+            post.password = pb.SecurityService.encrypt(post.password);
         }
 
         if(post.confirm_password) {
