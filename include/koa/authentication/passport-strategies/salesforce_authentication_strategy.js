@@ -93,4 +93,3 @@ module.exports = (pb) => {
         salesforceSSO: new CustomStrategy(salesforceSSO)
     };
 };
-
