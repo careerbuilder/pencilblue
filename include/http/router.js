@@ -58,9 +58,15 @@ module.exports = function (pb) {
 
         _handleMiddleware(req, res, action) {
             return new Promise((resolve, reject) => {
-                action(req, res, (err) => {
-                    if (err) reject(err);
-                    else resolve();
+                process.nextTick(() => {
+                    try {
+                        action(req, res, (err) => {
+                            if (err) reject(err);
+                            else resolve();
+                        });
+                    } catch (e) {
+                        reject(e);
+                    }
                 });
             });
         }
