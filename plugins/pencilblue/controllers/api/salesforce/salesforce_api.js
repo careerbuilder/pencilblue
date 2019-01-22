@@ -47,7 +47,7 @@ module.exports = function SalesforceAPIModule(pb) {
             return await this.salesforceRequest('POST', url, body, true, cb);
         }
 
-        async changeEmail(cb) {
+        async changeEmail(site, cb) {
             let url;
             const user = this.ctx.session.authentication.user;
             if (user && user.salesforce) {
@@ -56,7 +56,24 @@ module.exports = function SalesforceAPIModule(pb) {
             const body = {
                 Email: this.body.newEmail
             };
-            return await this.salesforceRequest('PATCH', url, body, true, cb);
+            const response = await this.salesforceRequest('PATCH', url, body, true, cb);
+            try {
+                const siteQueryService = new pb.SiteQueryService({
+                    site: site,
+                    onlyThisSite: false
+                });
+                await siteQueryService.updateFieldsAsync('user', {
+                    object_type: 'user',
+                    external_user_id: user.external_user_id
+                }, {
+                    '$set': {
+                        email: this.body.newEmail
+                    }
+                });
+            } catch(e) {
+                pb.log.warn('Something went wrong during the mongo user\'s email update: ', e);
+            }
+            return response;
         }
     }
 

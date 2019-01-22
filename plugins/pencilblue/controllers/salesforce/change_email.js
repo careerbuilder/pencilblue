@@ -6,7 +6,7 @@ module.exports = function SalesforceChangeEmailModule(pb) {
     class SalesforceChangeEmailController extends SalesforceAPIController {
         render(cb) {
             this.sanitizeObject(this.body);
-            this.changeEmail(cb);
+            this.changeEmail(this.site, cb);
         }
     }
 

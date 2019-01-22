@@ -80,6 +80,15 @@ async function saveUser(user, loginContext, done, pb, ignorePassword = false) {
         if (!createdUser) {
             await dao.saveAsync(user);
             createdUser = await getUser(_loginContext, user.identity_provider, done, pb, true);
+        } else if (createdUser && createdUser.email !== user.email) {
+            await dao.updateFieldsAsync('user', {
+                object_type: 'user',
+                external_user_id: user.external_user_id
+            }, {
+                '$set': {
+                    email: user.email
+                }
+            });
         }
     } catch (err) {
         pb.log.error(`Failed to get createdUser during authentication. ${err}`);
