@@ -116,7 +116,7 @@ module.exports = (pb) => {
                         }
                         resolve(data);
                     });
-                }).catch(err => console.log(err);
+                }).catch(err => console.log(err));
             });
 
             //analytics average
