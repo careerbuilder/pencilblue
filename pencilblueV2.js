@@ -108,6 +108,7 @@ module.exports = (pb) => {
                     if(!this.router || !this.router.__server || !this.router.__server.getConnections) {
                         console.log('Failed to get server when registerting current requests.');
                         console.log(this.router);
+                        return;
                     }
                     this.router.__server.getConnections((err, data) => {
                         if (err) {
