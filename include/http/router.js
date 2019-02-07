@@ -135,6 +135,10 @@ module.exports = function(pb) {
         }
 
         useSSL() {
+            console.log("--------------------");
+            console.log(pb.config.server.ssl.key);
+            console.log(pb.config.server.ssl.cert);
+            console.log("--------------------");
             const hasKeyAndCert = pb.config.server && pb.config.server.ssl && pb.config.server.ssl.key && pb.config.server.ssl.cert;
             return process.env.USE_SSL === '1' && hasKeyAndCert;
         }
