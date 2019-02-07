@@ -104,6 +104,10 @@ module.exports = (pb) => {
             //current requests
             pb.ServerRegistry.addItem('currentRequests', () => {
                 return new Promise((resolve, reject) => {
+                    if(!this.router || !this.router.__server || !this.router.__server.getConnections) {
+                        console.log('Failed to get server when registerting current requests.');
+                        console.log(this.router);
+                    }
                     this.router.__server.getConnections((err, data) => {
                         if (err) {
                             return reject(err);
