@@ -164,6 +164,68 @@ module.exports = function(pb) {
                     }
                 });
         }
+        startSSLServerV2 () {
+         let config = {
+                domain: pb.config.siteIP,
+                http: {
+                    port: pb.config.server.ssl.handoff_port,
+                },
+                https: {
+                    port: pb.config.sitePort,
+                    options: {
+                        key: fs.readFileSync(pb.config.server.ssl.key, 'utf8'),
+                        cert: fs.readFileSync(pb.config.server.ssl.cert, 'utf8')
+                    }
+                },
+            };
+
+            function onHandoffRequest (req, res) {
+                var host = req.headers.host;
+                if (host) {
+                    var index = host.indexOf(':');
+                    if (index >= 0) {
+                        host = host.substring(0, index);
+                    }
+                }
+                if (pb.config.server.ssl.use_handoff_port_in_redirect) {
+                    host += ':'+pb.config.sitePort;
+                }
+
+                res.writeHead(301, { "Location": "https://" + host + req.url });
+                res.end();
+            }
+            let serverCallback = this.app.callback();
+            try {
+                var httpServer = http.createServer(onHandoffRequest);
+                httpServer
+                    .listen(config.http.port, function(err) {
+                        if (!!err) {
+                            console.error('HTTP server FAIL: ', err, (err && err.stack));
+                        }
+                        else {
+                            console.log(`HTTP  server OK: http://${config.domain}:${config.http.port}`);
+                        }
+                    });
+            }
+            catch (ex) {
+                console.error('Failed to start HTTP server\n', ex, (ex && ex.stack));
+            }
+            try {
+                var httpsServer = https.createServer(config.https.options, serverCallback);
+                httpsServer
+                    .listen(config.https.port, function(err) {
+                        if (!!err) {
+                            console.error('HTTPS server FAIL: ', err, (err && err.stack));
+                        }
+                        else {
+                            console.log(`HTTPS server OK: http://${config.domain}:${config.https.port}`);
+                        }
+                    });
+            }
+            catch (ex) {
+                console.error('Failed to start HTTPS server\n', ex, (ex && ex.stack));
+            }
+        }
 
         /***
          * Listen function that starts the server
@@ -180,7 +242,7 @@ module.exports = function(pb) {
 
                 this._addDefaultMiddleware();
                 if (this.useSSL()) {
-                    this.startSSLServer(port);
+                    this.startSSLServerV2(port);
                 } else {
                     this.__server = this.app.listen(port, () => {
                         pb.log.info('PencilBlue is ready!');
