@@ -156,7 +156,7 @@ module.exports = function(pb) {
             const serverCallback = this.app.callback();
             const httpsServer = https.createServer(config.https.options, serverCallback);
             this.__server = httpsServer
-                .listen(config.https.port, function(err) {
+                .listen(config.https.port, pb.config.siteIP, function(err) {
                     if (!!err) {
                         pb.log.error('PencilBlue is not ready!');
                     } else {
