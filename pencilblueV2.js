@@ -106,7 +106,8 @@ module.exports = (pb) => {
                 return new Promise((resolve, reject) => {
                     // This should not be needed, but is causing server crashes.  Add diagonostics for now.
                     if(!this.router || !this.router.__server || !this.router.__server.getConnections) {
-                        console.log('Failed to get server when registerting current requests.');
+                        pb.log.error('Failed to get server when registerting current requests.');
+                        resolve(true);
                         return;
                     }
                     this.router.__server.getConnections((err, data) => {
