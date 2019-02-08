@@ -102,22 +102,22 @@ module.exports = (pb) => {
             pb.ServerRegistry.addItem('requests', () => this.router.requestsServed);
 
             //current requests
-            pb.ServerRegistry.addItem('currentRequests', () => {
-                return new Promise((resolve, reject) => {
-                    // This should not be needed, but is causing server crashes.  Add diagonostics for now.
-                    if(!this.router || !this.router.__server || !this.router.__server.getConnections) {
-                        pb.log.error('Failed to get server when registerting current requests.');
-                        resolve(true);
-                        return;
-                    }
-                    this.router.__server.getConnections((err, data) => {
-                        if (err) {
-                            return reject(err);
-                        }
-                        resolve(data);
-                    });
-                }).catch(err => console.log(err));
-            });
+//             pb.ServerRegistry.addItem('currentRequests', () => {
+//                 return new Promise((resolve, reject) => {
+//                     // This should not be needed, but is causing server crashes.  Add diagonostics for now.
+//                     if(!this.router || !this.router.__server || !this.router.__server.getConnections) {
+//                         pb.log.error('Failed to get server when registerting current requests.');
+//                         resolve(true);
+//                         return;
+//                     }
+//                     this.router.__server.getConnections((err, data) => {
+//                         if (err) {
+//                             return reject(err);
+//                         }
+//                         resolve(data);
+//                     });
+//                 }).catch(err => console.log(err));
+//             });
 
             //analytics average
             pb.ServerRegistry.addItem('analytics', () => pb.AnalyticsManager.getStats());
