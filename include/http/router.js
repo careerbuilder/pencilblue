@@ -168,11 +168,12 @@ module.exports = function(pb) {
         }
         startSSLServerV2 () {
          let config = {
-                domain: pb.config.siteIP,
                 http: {
+                    domain: config.server.ssl.handoff_ip,
                     port: pb.config.server.ssl.handoff_port,
                 },
                 https: {
+                    domain: pb.config.siteIP,
                     port: pb.config.sitePort,
                     options: {
                         key: fs.readFileSync(pb.config.server.ssl.key, 'utf8'),
@@ -198,17 +199,17 @@ module.exports = function(pb) {
             }
             let serverCallback = this.app.callback();
             try {
-//                 var httpServer = http.createServer(onHandoffRequest);
-//                 httpServer
-//                     .listen(config.http.port, function(err) {
-//                         if (!!err) {
-//                             pb.log.error('HTTP server FAIL: ', err, (err && err.stack));
-//                         }
-//                         else {
-                            //pb.log.info('PencilBlue Handoff Server is ready!');
-//                             pb.log.info(`HTTP  server OK: http://${config.domain}:${config.http.port}`);
-//                         }
-//                     });
+                 var httpServer = http.createServer(onHandoffRequest);
+                 httpServer
+                     .listen(config.http.port, function(err) {
+                         if (!!err) {
+                             pb.log.error('HTTP server FAIL: ', err, (err && err.stack));
+                         }
+                         else {
+                             pb.log.info('PencilBlue Handoff Server is ready!');
+                             pb.log.info(`HTTP  server OK: http://${config.http.domain}:${config.http.port}`);
+                         }
+                     });
             }
             catch (ex) {
                 console.error('Failed to start HTTP server\n', ex, (ex && ex.stack));
@@ -222,7 +223,7 @@ module.exports = function(pb) {
                         }
                         else {
                             pb.log.info('PencilBlue with SSL is ready!');
-                            pb.log.info(`HTTPS server OK: http://${config.domain}:${config.https.port}`);
+                            pb.log.info(`HTTPS server OK: http://${config.https.domain}:${config.https.port}`);
                         }
                     });
             }
