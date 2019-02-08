@@ -5,6 +5,7 @@ const bodyParser = require('koa-body');
 const Cookies = require('koa-cookie').default;
 const Passport = require('../koa/authentication/Passport')();
 const https = require('https');
+const http = require('http');
 const fs = require('fs');
 
 module.exports = function(pb) {
