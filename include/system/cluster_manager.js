@@ -27,14 +27,7 @@ module.exports = (pb) => {
             if (!pb.config.cluster.self_managed) {
                 pb.log.debug('System: Running in managed mode');
             }
-            //return new PencilBlueServer(config).startup();
-            // Temporary Test Code.  Do not let this stay here.
-            let pb1;
-            setTimeout(() => {
-                pb.log.info('Starting the server');
-                pb1 = new PencilBlueServer(config).startup();
-            }, Math.random() * 15000);
-            return pb1;
+            return new PencilBlueServer(config).startup();
         }
 
         static registerShutdownHook (name, shutdownHook) {
