@@ -231,7 +231,8 @@ module.exports = function(pb) {
          * Listen function that starts the server
          * @param port
          */
-        listen(port) {
+        listen() {
+            let port = pb.config.sitePort;
             if (!this.calledOnce) {
                 this._loadPublicRoutes(); // Loads PB public routes, not regular public routes. -- Need to remove eventually
                 this._loadInMiddleware();
