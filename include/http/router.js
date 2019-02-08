@@ -16,7 +16,8 @@ module.exports = function(pb) {
             this.app = new Koa();
             this.app.keys = ['9011fa34-41a6-4a4d-8ad7-d591c5d3ca01']; // Random GUID
             this.app._requestsServed = this.app._requestsServed || 0;
-
+            this.app.proxy = true;
+            
             this.router = new Router();
 
             this.app.use(bodyParser({
@@ -201,10 +202,11 @@ module.exports = function(pb) {
 //                 httpServer
 //                     .listen(config.http.port, function(err) {
 //                         if (!!err) {
-//                             console.error('HTTP server FAIL: ', err, (err && err.stack));
+//                             pb.log.error('HTTP server FAIL: ', err, (err && err.stack));
 //                         }
 //                         else {
-//                             console.log(`HTTP  server OK: http://${config.domain}:${config.http.port}`);
+                            //pb.log.info('PencilBlue Handoff Server is ready!');
+//                             pb.log.info(`HTTP  server OK: http://${config.domain}:${config.http.port}`);
 //                         }
 //                     });
             }
@@ -216,10 +218,11 @@ module.exports = function(pb) {
                 httpsServer
                     .listen(config.https.port, function(err) {
                         if (!!err) {
-                            console.error('HTTPS server FAIL: ', err, (err && err.stack));
+                            pb.log.error('HTTPS server FAIL: ', err, (err && err.stack));
                         }
                         else {
-                            console.log(`HTTPS server OK: http://${config.domain}:${config.https.port}`);
+                            pb.log.info('PencilBlue with SSL is ready!');
+                            pb.log.info(`HTTPS server OK: http://${config.domain}:${config.https.port}`);
                         }
                     });
             }
