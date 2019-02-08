@@ -31,7 +31,7 @@ module.exports = (pb) => {
 
             this._addRoutesToRouter();
 
-            this.router.listen(8080);
+            this.router.listen(pb.config.sitePort);
         }
 
         /******************************
