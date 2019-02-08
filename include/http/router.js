@@ -197,16 +197,16 @@ module.exports = function(pb) {
             }
             let serverCallback = this.app.callback();
             try {
-                var httpServer = http.createServer(onHandoffRequest);
-                httpServer
-                    .listen(config.http.port, function(err) {
-                        if (!!err) {
-                            console.error('HTTP server FAIL: ', err, (err && err.stack));
-                        }
-                        else {
-                            console.log(`HTTP  server OK: http://${config.domain}:${config.http.port}`);
-                        }
-                    });
+//                 var httpServer = http.createServer(onHandoffRequest);
+//                 httpServer
+//                     .listen(config.http.port, function(err) {
+//                         if (!!err) {
+//                             console.error('HTTP server FAIL: ', err, (err && err.stack));
+//                         }
+//                         else {
+//                             console.log(`HTTP  server OK: http://${config.domain}:${config.http.port}`);
+//                         }
+//                     });
             }
             catch (ex) {
                 console.error('Failed to start HTTP server\n', ex, (ex && ex.stack));
