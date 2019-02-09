@@ -175,7 +175,7 @@ module.exports = function(pb) {
                 },
                 https: {
                     domain: pb.config.siteIP,
-                    port: pb.config.sitePort,
+                    port: '8080',//pb.config.sitePort,
                     options: {
                         key: fs.readFileSync(pb.config.server.ssl.key, 'utf8'),
                         cert: fs.readFileSync(pb.config.server.ssl.cert, 'utf8')
