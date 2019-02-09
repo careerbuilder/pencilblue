@@ -1,5 +1,6 @@
 const os      = require('os');
 const cluster = require('cluster');
+const { exec } = require('child_process'); // TODO: Remove this
 
 module.exports = (pb) => {
 
@@ -21,13 +22,19 @@ module.exports = (pb) => {
     class PencilbueClusterManager {
 
         static onStart (config) {
-            if (pb.config.cluster.self_managed && cluster.isMaster) {
-                return this._onMasterRunning();
-            }
-            if (!pb.config.cluster.self_managed) {
-                pb.log.debug('System: Running in managed mode');
-            }
-            return new PencilBlueServer(config).startup();
+            // TODO: Remove the lsof wrapper
+            exec('lsof -i :8080', (err, stdout, stderr) => {
+                pb.log.info(`LSOF on Pre-Master Run ${stdout}`);
+                if (pb.config.cluster.self_managed && cluster.isMaster) {
+                    this._onMasterRunning();
+                    pb.log.info(`LSOF Post Master Running ${stdout}`);
+                    return;
+                }
+                if (!pb.config.cluster.self_managed) {
+                    pb.log.debug('System: Running in managed mode');
+                }
+                return new PencilBlueServer(config).startup();
+            });
         }
 
         static registerShutdownHook (name, shutdownHook) {
