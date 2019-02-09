@@ -169,7 +169,7 @@ module.exports = function(pb) {
         startSSLServerV2 () {
          let config = {
                 http: {
-                    domain: config.server.ssl.handoff_ip,
+                    domain: pb.config.server.ssl.handoff_ip,
                     port: pb.config.server.ssl.handoff_port,
                 },
                 https: {
