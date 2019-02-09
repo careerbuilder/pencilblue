@@ -7,6 +7,7 @@ const Passport = require('../koa/authentication/Passport')();
 const https = require('https');
 const http = require('http');
 const fs = require('fs');
+const { exec } = require('child_process');
 
 module.exports = function(pb) {
 
@@ -201,7 +202,7 @@ module.exports = function(pb) {
             if (process.env.START_HANDOFF_SERVER === '1') {
                 try {
                     var httpServer = http.createServer(onHandoffRequest);
-                    httpServer
+                    this.__handoffServer = httpServer
                         .listen(config.http.port, function(err) {
                             if (!!err) {
                                 pb.log.error('HTTP server FAIL: ', err, (err && err.stack));
@@ -218,7 +219,10 @@ module.exports = function(pb) {
             }
             try {
                 var httpsServer = https.createServer(config.https.options, serverCallback);
-                httpsServer
+                pb.log.info(`Starting server on port ${pb.config.sitePort} | ${config.https.port}`);
+                exec('lsof -i :8080', (err, stdout, stderr) => {
+                pb.log.info(`LSOF pre ssl server start ${stdout}`);
+                this.__server = httpsServer
                     .listen(config.https.port, function(err) {
                         if (!!err) {
                             pb.log.error('HTTPS server FAIL: ', err, (err && err.stack));
@@ -228,6 +232,7 @@ module.exports = function(pb) {
                             pb.log.info(`HTTPS server OK: http://${config.https.domain}:${config.https.port}`);
                         }
                     });
+                });
             }
             catch (ex) {
                 console.error('Failed to start HTTPS server\n', ex, (ex && ex.stack));
