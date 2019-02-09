@@ -51,6 +51,7 @@
     "koa-passport": "^4.1.1",
     "koa-router": "^7.4.0",
     "koa-session": "^5.8.3",
+    "koa-sslify": "^4.0.3",
     "locale": "^0.1.0",
     "lodash": "^4.17.2",
     "markdown": "~0.5.0",

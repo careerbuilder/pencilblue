@@ -9,6 +9,8 @@ const http = require('http');
 const fs = require('fs');
 const { exec } = require('child_process');
 
+const sslify = require('koa-sslify').default; // factory with default options
+
 module.exports = function(pb) {
 
     class PencilblueRouter {
@@ -17,6 +19,7 @@ module.exports = function(pb) {
             this.app = new Koa();
             this.app.keys = ['9011fa34-41a6-4a4d-8ad7-d591c5d3ca01']; // Random GUID
             this.app._requestsServed = this.app._requestsServed || 0;
+
             this.app.proxy = true;
             
             this.router = new Router();
@@ -26,6 +29,9 @@ module.exports = function(pb) {
                 // formidable: { uploadDir: path.join(__dirname, 'tmp') }
             }));
             let passport = Passport(pb);
+            if (this.useSSL()) {
+                this.app.use(sslify({skipDefaultPort: false}));
+            }
             this.app.use(Session(this.app));
             this.app.use(Cookies());
             this.app.use(passport.initialize());
@@ -244,7 +250,6 @@ module.exports = function(pb) {
          * @param port
          */
         listen() {
-            let port = pb.config.sitePort;
             if (!this.calledOnce) {
                 this._loadPublicRoutes(); // Loads PB public routes, not regular public routes. -- Need to remove eventually
                 this._loadInMiddleware();
@@ -255,17 +260,31 @@ module.exports = function(pb) {
 
                 this._addDefaultMiddleware();
                 if (this.useSSL()) {
-                    this.startSSLServerV2(port);
+                    // this.startSSLServerV2(port);
+                    this.startSSLIFYServer();
                 } else {
-                    this.__server = this.app.listen(port, () => {
-                        pb.log.info('PencilBlue is ready!');
-                    });
+                    this.startLocalServer();
                 }
 
                 this.calledOnce = 1;
             } else {
                 pb.log.error(`Listen function was called twice on the same server instance`);
             }
+        }
+        startSSLIFYServer() {
+            let options = {
+                key: fs.readFileSync(pb.config.server.ssl.key, 'utf8'),
+                cert: fs.readFileSync(pb.config.server.ssl.cert, 'utf8')
+            };
+
+            // start the server
+            this.__handoffServer = http.createServer(this.app.callback()).listen(8081)//pb.config.server.ssl.handoff_port);
+            this.__server = https.createServer(options, this.app.callback()).listen(pb.config.sitePort);
+        }
+        startLocalServer() {
+            this.__server = this.app.listen(pb.config.sitePort, () => {
+                pb.log.info('PencilBlue is ready!');
+            });
         }
         get requestsServed() {
             return this.app._requestsServed;
