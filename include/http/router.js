@@ -278,7 +278,9 @@ module.exports = function(pb) {
             };
 
             // start the server
-            this.__handoffServer = http.createServer(this.app.callback()).listen(8081)//pb.config.server.ssl.handoff_port);
+            if (process.env.START_HANDOFF_SERVER === '1') {
+                this.__handoffServer = http.createServer(this.app.callback()).listen(pb.config.server.ssl.handoff_port);
+            }
             this.__server = https.createServer(options, this.app.callback()).listen(pb.config.sitePort);
         }
         startLocalServer() {
