@@ -14,7 +14,6 @@ let pb;
 class PencilBlueCluster {
     constructor (config) {
         this.config = config;
-        this.config.sitePort = 8081;
         pb = createPencilBlueInstance(config);
         pb.system.registerSignalHandlers(true);
         this.pb = pb;

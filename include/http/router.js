@@ -304,7 +304,10 @@ module.exports = function(pb) {
         };
 
         startHttpServer() {
-            this.__server = this.app.listen(pb.config.sitePort, () => {
+            let siteIp = pb.config.siteIP;
+            let sitePort = pb.config.sitePort;
+            pb.log.info(`ServerInitializer: HTTP server starting, binding on IP ${siteIp} and port: ${sitePort}`);
+            this.__server = this.app.listen(sitePort, siteIp, () => {
                 pb.log.info('PencilBlue is ready!');
             });
         }
