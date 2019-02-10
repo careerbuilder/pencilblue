@@ -27,7 +27,10 @@ module.exports = pb => ({
         //check to see if we should inspect the x-forwarded-proto header for SSL
         //load balancers use this for SSL termination relieving the stress of SSL
         //computation on more powerful load balancers.
-        if (!pb.config.server.ssl.use_x_forwarded || ctx.req.headers['x-forwarded-proto'] === 'https') {
+        pb.log.silly('Incoming request: ' + ctx.req.headers.host + ' | ' + ctx.req.url);
+
+        // if (ctx.req.headers['x-forwarded-proto'] === 'https') {
+        if(!pb.config.server.ssl.use_x_forwarded || ctx.req.headers['x-forwarded-proto'] === 'https') {
             return await next();
         }
 
@@ -45,6 +48,7 @@ module.exports = pb => ({
         ctx.status = 301;
         ctx.redirect(`https://${host}${ctx.req.url}`);
         ctx.body = 'Redirecting http to https';
+        pb.log.silly(`Redirecting HTTP request to HTTPS - ${host}${ctx.req.url}`);
     },
     sessionCheck: async (ctx, next) => {
         ctx.session.uid = ctx.session.uid || pb.util.uniqueId();
