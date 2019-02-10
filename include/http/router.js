@@ -170,19 +170,7 @@ module.exports = function(pb) {
                     await this.startSslServerV3();
                     pb.log.info('PencilBlue: Ready to run!');
                 } else {
-                    let options = {
-                        key: fs.readFileSync(pb.config.server.ssl.key, 'utf8'),
-                        cert: fs.readFileSync(pb.config.server.ssl.cert, 'utf8')
-                    };
-                    let startServerAsync = util.promisify(this._startServer);
-
-                    this.__server = https.createServer(options, this.app.callback());
-
-                    let siteIp = pb.config.siteIP;
-                    let sitePort = pb.config.sitePort;
-                    pb.log.info(`ServerInitializer: HTTPS server starting, binding on IP ${siteIp} and port: ${sitePort}`);
-                    await startServerAsync(this.__server, pb.config.sitePort, pb.config.siteIP);
-                    // this.startHttpServer();
+                    this.startHttpServer();
                 }
 
                 this.calledOnce = 1;
