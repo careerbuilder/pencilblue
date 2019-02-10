@@ -18,11 +18,33 @@ async function servePublicContent(ctx, path) {
 }
 module.exports = pb => ({
     parseUrl: async (ctx, next) => {
-        ctx.app.requestsServed ? ctx.app.requestsServed++ : 1;
         ctx.req.hostname = ctx.req.headers.host;
         ctx.req.urlObj = url.parse(ctx.req.url, true);
         ctx.req.url = url.parse(ctx.req.url, true);
         await next();
+    },
+    checkSSL: async (ctx, next) => {
+        //check to see if we should inspect the x-forwarded-proto header for SSL
+        //load balancers use this for SSL termination relieving the stress of SSL
+        //computation on more powerful load balancers.
+        if (!pb.config.server.ssl.use_x_forwarded || ctx.req.headers['x-forwarded-proto'] === 'https') {
+            return await next();
+        }
+
+        let host = ctx.req.headers.host;
+        if (host) {
+            let index = host.indexOf(':');
+            if (index >= 0) {
+                host = host.substring(0, index);
+            }
+        }
+        if (pb.config.server.ssl.use_handoff_port_in_redirect) {
+            host += `:${pb.config.sitePort}`;
+        }
+
+        ctx.status = 301;
+        ctx.redirect(`https://${host}${ctx.req.url}`);
+        ctx.body = 'Redirecting http to https';
     },
     sessionCheck: async (ctx, next) => {
         ctx.session.uid = ctx.session.uid || pb.util.uniqueId();

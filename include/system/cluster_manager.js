@@ -22,19 +22,13 @@ module.exports = (pb) => {
     class PencilbueClusterManager {
 
         static onStart (config) {
-            // TODO: Remove the lsof wrapper
-            exec('lsof -i :8080', (err, stdout, stderr) => {
-                pb.log.info(`LSOF on Pre-Master Run ${stdout}`);
-                if (pb.config.cluster.self_managed && cluster.isMaster) {
-                    this._onMasterRunning();
-                    pb.log.info(`LSOF Post Master Running ${stdout}`);
-                    return;
-                }
-                if (!pb.config.cluster.self_managed) {
-                    pb.log.debug('System: Running in managed mode');
-                }
-                return new PencilBlueServer(config).startup();
-            });
+            if (pb.config.cluster.self_managed && cluster.isMaster) {
+                return this._onMasterRunning();
+            }
+            if (!pb.config.cluster.self_managed) {
+                pb.log.debug('System: Running in managed mode');
+            }
+            return new PencilBlueServer(config).startup();
         }
 
         static registerShutdownHook (name, shutdownHook) {
@@ -51,7 +45,7 @@ module.exports = (pb) => {
 
             // listen for TERM signal .e.g. kill
             process.on ('SIGTERM', () => {
-                this.log(`SIGTERM detected${this.isShuttingDown() ? ' but is already shutting down!' : '...'}`, true);
+                this.log(`SIGTERM detected${this.isShuttingDown() ? ' but is already shutting down!' : '...'}`);
                 if (!this.isShuttingDown()) {
                     this.shutdown(killProcess);
                 }
@@ -59,7 +53,7 @@ module.exports = (pb) => {
 
             // listen for INT signal e.g. Ctrl-C
             process.on ('SIGINT', () => {
-                this.log(`SIGINT detected${this.isShuttingDown() ? ' but is already shutting down!' : '...'}`, true);
+                this.log(`SIGINT detected${this.isShuttingDown() ? ' but is already shutting down!' : '...'}`);
                 if (!this.isShuttingDown()) {
                     this.shutdown(killProcess);
                 }
@@ -67,7 +61,7 @@ module.exports = (pb) => {
 
             process.on ('uncaughtException', (err) => {
                 let shutdownStateMessage = this.isShuttingDown() ? ' but is already shutting down!' : '...';
-                this.log(`uncaught Exception detected${shutdownStateMessage} Error Message: ${err.stack}`, true);
+                this.log(`uncaught Exception detected${shutdownStateMessage} Error Message: ${err.stack}`);
                 if (!this.isShuttingDown()) {
                     this.shutdown(killProcess);
                 }
@@ -152,7 +146,7 @@ module.exports = (pb) => {
                 this.log(`Forked worker [${newWorkerId}]`, true);
             }
             else if (!this.isShuttingDown()){
-                this.logError(`${pb.config.cluster.fatal_error_count} failures have occurred within ${pb.config.fatal_error_timeout}ms.  Forcing shutdown...`);
+                this.logError(`${pb.config.cluster.fatal_error_count} failures have occurred within ${pb.config.cluster.fatal_error_timeout}ms.  Forcing shutdown...`);
                 process.kill();
             }
         }

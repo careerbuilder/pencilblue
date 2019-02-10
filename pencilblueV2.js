@@ -8,58 +8,8 @@ module.exports = (pb) => {
 
             this.router = new pb.Router();
         }
+
         async startup() {
-                    exec('lsof -i :8080', (err, stdout, stderr) => {
-                pb.log.info(`LSOF on Startup ${stdout}`);
-            });
-            pb.LocalizationService.init();
-            await pb.Localization.initAsync();
-            exec('lsof -i :8080', (err, stdout, stderr) => {
-                pb.log.info(`LSOF post Localization ${stdout}`);
-            });
-            // Start the Database connections and readers
-            await this._initDBConnections();
-            await this._initDBIndices();
-            exec('lsof -i :8080', (err, stdout, stderr) => {
-                pb.log.info(`LSOF on Post DB ${stdout}`);
-            });
-
-            await this.pb.ServerRegistry.getInstance().init();
-            this.pb.CommandService.getInstance().init(function(err, data) {});
-            exec('lsof -i :8080', (err, stdout, stderr) => {
-                pb.log.info(`LSOF on Post Command Service ${stdout}`);
-            });
-            
-            // Setup Routing and Middleware
-            this._initMiddleware();
-            this._initCoreRoutes();
-
-            exec('lsof -i :8080', (err, stdout, stderr) => {
-                pb.log.info(`LSOF on Post Routring and Middleware ${stdout}`);
-            });
-            
-            // Load in Plugins and Sites
-            await this._initPlugins();
-            await this._initSites();
-            exec('lsof -i :8080', (err, stdout, stderr) => {
-                pb.log.info(`LSOF on Post Site ${stdout}`);
-            });
-
-            this._registerMetrics();
-            exec('lsof -i :8080', (err, stdout, stderr) => {
-                pb.log.info(`LSOF on Post Metrics ${stdout}`);
-            });
-
-            this._addRoutesToRouter();
-            exec('lsof -i :8080', (err, stdout, stderr) => {
-                pb.log.info(`Result of LSOF 1 ${stdout}`);
-            });
-            this.router.listen(8080);
-            exec('lsof -i :8080', (err, stdout, stderr) => {
-                pb.log.info(`Result of LSOF 2: ${stdout}`);
-            });
-        }
-        async startupReal() {
             pb.LocalizationService.init();
             await pb.Localization.initAsync();
 
@@ -82,7 +32,7 @@ module.exports = (pb) => {
 
             this._addRoutesToRouter();
 
-            this.router.listen();
+            await this.router.listen();
         }
 
         /******************************
@@ -153,11 +103,12 @@ module.exports = (pb) => {
             pb.ServerRegistry.addItem('requests', () => this.router.requestsServed);
 
             //current requests
-//             pb.ServerRegistry.addItem('currentRequests', () => {
+            pb.ServerRegistry.addItem('currentRequests', () => 1);
+            // pb.ServerRegistry.addItem('currentRequests', () => {
 //                 return new Promise((resolve, reject) => {
-//                     // This should not be needed, but is causing server crashes.  Add diagonostics for now.
+//                     // This should not be needed, but is causing server crashes.  Add diagnostics for now.
 //                     if(!this.router || !this.router.__server || !this.router.__server.getConnections) {
-//                         pb.log.error('Failed to get server when registerting current requests.');
+//                         pb.log.error('Failed to get server when registering current requests.');
 //                         resolve(true);
 //                         return;
 //                     }

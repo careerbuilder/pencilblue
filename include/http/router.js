@@ -7,9 +7,9 @@ const Passport = require('../koa/authentication/Passport')();
 const https = require('https');
 const http = require('http');
 const fs = require('fs');
-const { exec } = require('child_process');
+const util = require('util');
 
-const sslify = require('koa-sslify').default; // factory with default options
+const { default: enforceHttps } = require('koa-sslify');
 
 module.exports = function(pb) {
 
@@ -24,14 +24,17 @@ module.exports = function(pb) {
             
             this.router = new Router();
 
+            if (this.useSSL()) {
+                this.app.use(enforceHttps({
+                    port: pb.config.sitePort
+                }));
+            }
             this.app.use(bodyParser({
                 multipart: true,
                 // formidable: { uploadDir: path.join(__dirname, 'tmp') }
             }));
             let passport = Passport(pb);
-            if (this.useSSL()) {
-                this.app.use(sslify({skipDefaultPort: false}));
-            }
+
             this.app.use(Session(this.app));
             this.app.use(Cookies());
             this.app.use(passport.initialize());
@@ -144,11 +147,7 @@ module.exports = function(pb) {
         }
 
         useSSL() {
-            console.log("--------------------");
-            console.log(pb.config.server.ssl.key);
-            console.log(pb.config.server.ssl.cert);
-            console.log("--------------------");
-            const hasKeyAndCert = pb.config.server && pb.config.server.ssl && pb.config.server.ssl.key && pb.config.server.ssl.cert;
+            const hasKeyAndCert = context.config.server.ssl.enabled && pb.config.server.ssl.key && pb.config.server.ssl.cert;
             return process.env.USE_SSL === '1' && hasKeyAndCert;
         }
 
@@ -225,9 +224,6 @@ module.exports = function(pb) {
             }
             try {
                 var httpsServer = https.createServer(config.https.options, serverCallback);
-                pb.log.info(`Starting server on port ${pb.config.sitePort} | ${config.https.port}`);
-                exec('lsof -i :8080', (err, stdout, stderr) => {
-                pb.log.info(`LSOF pre ssl server start ${stdout}`);
                 this.__server = httpsServer
                     .listen(config.https.port, function(err) {
                         if (!!err) {
@@ -237,7 +233,6 @@ module.exports = function(pb) {
                             pb.log.info('PencilBlue with SSL is ready!');
                             pb.log.info(`HTTPS server OK: http://${config.https.domain}:${config.https.port}`);
                         }
-                    });
                 });
             }
             catch (ex) {
@@ -249,7 +244,7 @@ module.exports = function(pb) {
          * Listen function that starts the server
          * @param port
          */
-        listen() {
+        async listen() {
             if (!this.calledOnce) {
                 this._loadPublicRoutes(); // Loads PB public routes, not regular public routes. -- Need to remove eventually
                 this._loadInMiddleware();
@@ -261,9 +256,9 @@ module.exports = function(pb) {
                 this._addDefaultMiddleware();
                 if (this.useSSL()) {
                     // this.startSSLServerV2(port);
-                    this.startSSLIFYServer();
+                    await this.startSslServerV3();
                 } else {
-                    this.startLocalServer();
+                    this.startHttpServer();
                 }
 
                 this.calledOnce = 1;
@@ -271,19 +266,46 @@ module.exports = function(pb) {
                 pb.log.error(`Listen function was called twice on the same server instance`);
             }
         }
-        startSSLIFYServer() {
+        async startSslServerV3() {
             let options = {
                 key: fs.readFileSync(pb.config.server.ssl.key, 'utf8'),
                 cert: fs.readFileSync(pb.config.server.ssl.cert, 'utf8')
             };
-
-            // start the server
-            if (process.env.START_HANDOFF_SERVER === '1') {
-                this.__handoffServer = http.createServer(this.app.callback()).listen(pb.config.server.ssl.handoff_port);
+            let chainPath = pb.config.server.ssl.chain;
+            if (chainPath) {
+                options.ca = fs.readFileSync(chainPath);
             }
-            this.__server = https.createServer(options, this.app.callback()).listen(pb.config.sitePort);
+
+            // Start primary ssl server
+            let startServerAsync = util.promisify(this._startServer);
+
+            this.__server = https.createServer(options, this.app.callback());
+
+            let siteIp = pb.config.siteIP;
+            let sitePort = pb.config.sitePort;
+            pb.log.info(`ServerInitializer: HTTPS server starting, binding on IP ${siteIp} and port: ${sitePort}`);
+            await startServerAsync(this.__server, pb.config.sitePort, pb.config.siteIP);
+
+            // start the http hand-off server
+            // if (process.env.START_HANDOFF_SERVER === '1') {
+            this.__handoffServer = http.createServer(this.app.callback());
+            let handoffIp = pb.config.server.ssl.handoff_ip;
+            let handoffPort = pb.config.server.ssl.handoff_port;
+
+            pb.log.info(`ServerInitializer: Handoff HTTP server starting, binding on IP ${handoffIp} and port: ${handoffPort}`);
+            await startServerAsync(this.__handoffServer, handoffPort, handoffIp);
+            // }
         }
-        startLocalServer() {
+
+        _startServer (server, port, ip, cb) {
+            server.once('error', cb);
+            server.listen(port, ip, () => {
+                server.removeListener('error', cb);
+                cb(null, true);
+            });
+        };
+
+        startHttpServer() {
             this.__server = this.app.listen(pb.config.sitePort, () => {
                 pb.log.info('PencilBlue is ready!');
             });
