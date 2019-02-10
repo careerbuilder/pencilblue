@@ -27,11 +27,8 @@ module.exports = pb => ({
         //check to see if we should inspect the x-forwarded-proto header for SSL
         //load balancers use this for SSL termination relieving the stress of SSL
         //computation on more powerful load balancers.
-        pb.log.silly('Incoming request: ' + ctx.req.headers.host + ' | ' + ctx.req.url);
-        pb.log.silly(`X Forwarded for flag = ${pb.config.server.ssl.use_x_forwarded}`);
-        pb.log.silly(`X Forwarded for Header = ${ctx.req.headers['x-forwarded-proto']}`);
         // if (ctx.req.headers['x-forwarded-proto'] === 'https') {
-        if(pb.config.server.ssl.use_x_forwarded !== '1' || ctx.req.headers['x-forwarded-proto'] === 'https') {
+        if(pb.config.server.ssl.use_x_forwarded !== '1' || ctx.request.protocol === 'https' || ctx.req.headers['x-forwarded-proto'] === 'https') {
             return await next();
         }
 
