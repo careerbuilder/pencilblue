@@ -147,7 +147,7 @@ module.exports = function(pb) {
         }
 
         useSSL() {
-            const hasKeyAndCert = context.config.server.ssl.enabled && pb.config.server.ssl.key && pb.config.server.ssl.cert;
+            const hasKeyAndCert = pb.config.server.ssl.enabled && pb.config.server.ssl.key && pb.config.server.ssl.cert;
             return process.env.USE_SSL === '1' && hasKeyAndCert;
         }
 
@@ -255,8 +255,8 @@ module.exports = function(pb) {
 
                 this._addDefaultMiddleware();
                 if (this.useSSL()) {
-                    // this.startSSLServerV2(port);
                     await this.startSslServerV3();
+                    pb.log.info('PencilBlue: Ready to run!');
                 } else {
                     this.startHttpServer();
                 }
@@ -287,14 +287,12 @@ module.exports = function(pb) {
             await startServerAsync(this.__server, pb.config.sitePort, pb.config.siteIP);
 
             // start the http hand-off server
-            // if (process.env.START_HANDOFF_SERVER === '1') {
             this.__handoffServer = http.createServer(this.app.callback());
             let handoffIp = pb.config.server.ssl.handoff_ip;
             let handoffPort = pb.config.server.ssl.handoff_port;
 
             pb.log.info(`ServerInitializer: Handoff HTTP server starting, binding on IP ${handoffIp} and port: ${handoffPort}`);
             await startServerAsync(this.__handoffServer, handoffPort, handoffIp);
-            // }
         }
 
         _startServer (server, port, ip, cb) {
