@@ -28,9 +28,10 @@ module.exports = pb => ({
         //load balancers use this for SSL termination relieving the stress of SSL
         //computation on more powerful load balancers.
         pb.log.silly('Incoming request: ' + ctx.req.headers.host + ' | ' + ctx.req.url);
-
+        pb.log.silly(`X Forwarded for flag = ${pb.config.server.ssl.use_x_forwarded}`);
+        pb.log.silly(`X Forwarded for Header = ${ctx.req.headers['x-forwarded-proto']}`);
         // if (ctx.req.headers['x-forwarded-proto'] === 'https') {
-        if(!pb.config.server.ssl.use_x_forwarded || ctx.req.headers['x-forwarded-proto'] === 'https') {
+        if(pb.config.server.ssl.use_x_forwarded !== '1' || ctx.req.headers['x-forwarded-proto'] === 'https') {
             return await next();
         }
 
