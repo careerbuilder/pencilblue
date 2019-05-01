@@ -32,6 +32,13 @@ module.exports = function(pb) {
             delete req.session._loginContext; // Remove login context from session now its used
         };
 
+        // TO DO: this logic is doing something very specific. Please consider refactor for a more general implementation
+        async removeUserExternalUserIdFromSession(session) {
+            if (session && session.authentication && session.authentication.user && session.authentication.user.external_user_id) {
+                delete session.authentication.user.external_user_id;
+            }
+        };
+
         _getQuery(loginContext, identityProvider, ignorePassword) {
             const usernameSearchExp = pb.regexUtil.getCaseInsensitiveExact(loginContext.username);
             let query = {

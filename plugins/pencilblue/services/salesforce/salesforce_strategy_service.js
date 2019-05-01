@@ -24,6 +24,10 @@ module.exports = function(pb) {
             this.authStrategyServices = new AuthStrategyService();
         }
 
+        async clearSpecificValuesInSession(session) {
+            await this.authStrategyServices.removeUserExternalUserIdFromSession(session);
+        }
+
         async logout(req) {
             try {
                 const token = req.session.authentication.user.salesforce.authorize.access_token;

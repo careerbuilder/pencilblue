@@ -23,10 +23,12 @@ module.exports = function LogOutSFSSOControllerModule(pb) {
             let response = await salesforceStrategyService.logout(this.req);
             try {
                 await new Promise((resolve, reject) => {
-                    pb.session.end(this.session, (err, result) => {
+                    pb.session.end(this.session, async (err, result) => {
                         if (err) {
                             reject(false);
                         } else {
+                            //clear specific values in session for better control
+                            await salesforceStrategyService.clearSpecificValuesInSession(this.session);
                             //clear the cookie
                             const cookies = new Cookies(this.req, this.res);
                             const cookie = pb.SessionHandler.getSessionCookie(this.session);
