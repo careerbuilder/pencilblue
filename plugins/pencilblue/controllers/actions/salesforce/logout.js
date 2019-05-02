@@ -20,7 +20,6 @@ module.exports = function LogOutSFSSOControllerModule(pb) {
 
         async salesforceLogout(cb) {
             const salesforceStrategyService = new SalesforceStrategyService();
-            let response = await salesforceStrategyService.logout(this.req);
             try {
                 await new Promise((resolve, reject) => {
                     pb.session.end(this.session, async (err, result) => {
@@ -43,6 +42,7 @@ module.exports = function LogOutSFSSOControllerModule(pb) {
                 pb.log.error('Something went wrong during the removal of the cookie : ', e);
             }
 
+            let response = await salesforceStrategyService.logout(this.req);
             if (response && response.enableCustomLogout && response.url) {
                 request({
                     url: response.url,

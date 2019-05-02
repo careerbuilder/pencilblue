@@ -34,8 +34,8 @@ module.exports = function(pb) {
 
         // TO DO: this logic is doing something very specific. Please consider refactor for a more general implementation
         async removeUserExternalUserIdFromSession(session) {
-            if (session && session.authentication && session.authentication.user && session.authentication.user.external_user_id) {
-                delete session.authentication.user.external_user_id;
+            if (session && session.authentication && session.authentication.user) {
+                delete session.authentication.user;
             }
         };
 
