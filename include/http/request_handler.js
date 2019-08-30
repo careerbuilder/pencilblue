@@ -467,6 +467,7 @@ module.exports = function RequestHandlerModule(pb) {
             }
 
             this.resp.setHeader("Location", location);
+            pb.log.info(`CMS location in header: ${location}`);
             this.resp.end();
         }
         /**
