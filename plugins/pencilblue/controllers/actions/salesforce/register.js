@@ -33,11 +33,6 @@ module.exports = function RegisterSFControllerModule(pb) {
                         }).pipe(this.res);
                 } else {
                     this.redirect(response.url, cb);
-                    request(options)
-                        .on('response', (rsp) => {
-                            rsp.headers.location += `&lang=${this.ls.language}`;
-                        })
-                        .pipe(this.res)
                 }
             } else {
                 this.redirect('/login/salesforce', cb);
