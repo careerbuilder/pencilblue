@@ -93,7 +93,7 @@ module.exports = pb => ({
         req.pathVars = pathVars
     },
     inactiveAccessCheck: (req, res) => {
-        var inactiveSiteAccess = req.route.inactive_site_access;
+        var inactiveSiteAccess = req.route ? req.route.inactive_site_access : null;
         if (req.siteObj.active || inactiveSiteAccess) {
             return
         }
