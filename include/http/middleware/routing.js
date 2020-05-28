@@ -86,14 +86,14 @@ module.exports = pb => ({
                 return descriptor
             })
         })
-        if (!exactMatch && !found) {
+        if (!exactMatch && !found && req.siteObj.active) {
             throw ErrorUtils.notFound();
         }
         req.route = req.handler.route = descriptor
         req.pathVars = pathVars
     },
     inactiveAccessCheck: (req, res) => {
-        var inactiveSiteAccess = req.route.inactive_site_access;
+        var inactiveSiteAccess = req.route && req.route.inactive_site_access ? req.route.inactive_site_access : false;
         if (req.siteObj.active || inactiveSiteAccess) {
             return
         }
