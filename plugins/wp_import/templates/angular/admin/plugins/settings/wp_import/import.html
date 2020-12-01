@@ -17,7 +17,7 @@
 					$scope.successMessage = data.message;
 					$scope.uploading = false;
 					$window.location = '/admin/plugins/wp_import/settings/manage_new_users';
-				}).error(function(data, status) {
+				}).catch(function(data, status) {
 					$scope.errorMessage = data.message;
 					$scope.uploading = false;
 				});

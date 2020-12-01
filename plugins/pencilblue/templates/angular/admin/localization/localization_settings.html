@@ -34,7 +34,7 @@
                                 $scope.siteLocales = getGenerics($scope.localizationKVSet[0]);
                                 formatLocalizationKVSet();
                             })
-                            .error(function (error, status) {
+                            .catch(function (error, status) {
                                 $scope.errorMessage = error.message;
                                 $scope.saving = false;
                             });
@@ -128,7 +128,7 @@
                             .success(function (result) {
                                 $scope.onCreateOrEditComplete(result);
                             })
-                            .error(function (error, status) {
+                            .catch(function (error, status) {
                                 $scope.errorMessage = error.message;
                                 $scope.saving = false;
                                 angular.element('#progress_modal').modal('hide');
@@ -199,10 +199,10 @@
 
                 $scope.jobAction = function(actionType, identifier, data, cb) {
                     $http.post("/api/jobs/" + actionType + "/" + encodeURIComponent(identifier), data)
-                            .success(function(result) {
+                            .then(function(result) {
                                 cb(result);
                             })
-                            .error(function(error, status) {
+                            .catch(function(error, status) {
                                 $scope.onActionFailure(error);
                             });
                 };

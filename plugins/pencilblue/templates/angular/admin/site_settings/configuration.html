@@ -12,11 +12,11 @@
             $scope.saving = true;
 
             $http.post('/actions/admin/site_settings', {call_home: $scope.config.callHome})
-            .success(function(result) {
+            .then(function(result) {
                 $scope.successMessage = result.message;
                 $scope.saving = false;
             })
-            .error(function(error, status) {
+            .catch(function(error, status) {
                 $scope.errorMessage = error.message;
                 $scope.saving = false;
             });

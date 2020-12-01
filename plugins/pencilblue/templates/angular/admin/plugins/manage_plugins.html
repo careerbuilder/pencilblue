@@ -18,17 +18,17 @@
 					break;
 			}
 			$http.post("/api/plugins/" + actionType + "/" + encodeURIComponent(plugin.uid))
-			.success(function(result) {
+			.then(function(result) {
 				successCb(result);
 			})
-			.error(function(error, status) {
+			.catch(function(error, status) {
 				$scope.onActionFailure(error);
 			});
 		};
 
 		$scope.jobAction = function(actionType, identifier, data, cb) {
 			$http.post("/api/jobs/" + actionType + "/" + encodeURIComponent(identifier), data)
-			.success(function(result) {
+			.then(function(result) {
                 if (result.data.status === 'ERRORED') {
                     var error = {
                         message: result.data.error
@@ -37,7 +37,7 @@
                 }
 				cb(result);
 			})
-			.error(function(error) {
+			.catch(function(error) {
 				$scope.onActionFailure(error);
 			});
 		};

@@ -203,7 +203,7 @@
           var mediaTag = scope.wysiwyg.layout.substr(startIndex - (mediaDisplayPrefix.length - 1), endIndex + (mediaDisplayPrefix.length - 1));
 
           $http.get('/api/content/get_media_embed?id=' + mediaID + '&tag=' + encodeURIComponent(mediaTag))
-          .success(function(result) {
+          .then(function(result) {
             if(!result.code) {
               var mediaPreview = result.data;
 

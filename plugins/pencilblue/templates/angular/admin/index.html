@@ -24,10 +24,10 @@
 		$scope.refreshServers = function() {
 			$scope.refreshingServers = true;
 			$http.post('/api/cluster/refresh', {})
-			.success(function(result) {
+			.then(function(result) {
 				$timeout($scope.refreshPage, result.data.wait);
 			})
-			.error(function(error, status) {
+			.catch(function(error, status) {
 				$window.location.reload();
 			});
 		};
@@ -38,16 +38,16 @@
         
         $scope.updateClusterStats = function() {
             $http.get('/api/cluster')
-            .success(function(result) {
+            .then(function(result) {
 				$scope.cluster = result;
 			})
-			.error(function(error, status) {
+			.catch(function(error, status) {
 				$window.location.reload();
 			});
         };
 
 		$http.get('https://pencilblue.org/feed')
-		.success(function(result) {
+		.then(function(result) {
 			if (window.DOMParser){
 				parser = new DOMParser();
 				feed = parser.parseFromString(result, 'text/xml');

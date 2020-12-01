@@ -17,7 +17,7 @@
                 }).success(function(data, status, headers, config) {
                     $scope.successMessage = data.message;
                     $scope.uploading = false;
-                }).error(function(data, status) {
+                }).catch(function(data, status) {
                     $scope.errorMessage = data.message;
                     $scope.uploading = false;
                 });
